@@ -11,10 +11,42 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  image     String
-  createdAt DateTime @default(now())
+model Actor {
+  id        String  @id @default(uuid())
+  firstName String
+  lastName  String
+  movies    Movie[]
+}
+
+model Director {
+  id        String  @id @default(uuid())
+  firstName String
+  lastName  String
+  movies    Movie[]
+}
+
+model Frame {
+  id      String @id @default(uuid())
+  movie   Movie  @relation(fields: [movieId], references: [id])
+  time    Int
+  image   String
+  movieId String
+}
+
+model Color {
+  id     String  @id @default(uuid())
+  name   String
+  value  String
+  movies Movie[]
+}
+
+model Movie {
+  id              String    @id @default(uuid())
+  title           String
+  preferedFrameId String?
+  actors          Actor[]
+  frames          Frame[]
+  colors          Color[]
+  director        Director? @relation(fields: [directorId], references: [id])
+  directorId      String?
 }
