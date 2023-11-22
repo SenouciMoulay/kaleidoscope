@@ -16,6 +16,11 @@ model Actor {
   firstName String
   lastName  String
   movies    Movie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([firstName, lastName])
 }
 
 model Director {
@@ -23,14 +28,22 @@ model Director {
   firstName String
   lastName  String
   movies    Movie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([firstName, lastName])
 }
 
 model Frame {
-  id      String @id @default(uuid())
-  movie   Movie  @relation(fields: [movieId], references: [id])
-  time    Int
-  image   String
-  movieId String
+  id           String @id @default(uuid())
+  movie        Movie  @relation(fields: [movieId], references: [id], name: "MovieToFrame")
+  movieId      String
+  preferredFor Movie? @relation(name: "MovieToPreferredFrame")
+  image        String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Color {
@@ -38,15 +51,35 @@ model Color {
   name   String
   value  String
   movies Movie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, value])
 }
 
 model Movie {
-  id              String    @id @default(uuid())
-  title           String
-  preferedFrameId String?
-  actors          Actor[]
-  frames          Frame[]
-  colors          Color[]
-  director        Director? @relation(fields: [directorId], references: [id])
-  directorId      String?
+  id               String     @id @default(uuid())
+  title            String
+  year             Int
+  actors           Actor[]
+  frames           Frame[]    @relation(name: "MovieToFrame")
+  preferredFrame   Frame?     @relation(name: "MovieToPreferredFrame", fields: [preferredFrameId], references: [id])
+  preferredFrameId String?    @unique
+  colors           Color[]
+  directors        Director[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([title, year])
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
