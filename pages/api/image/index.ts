@@ -8,7 +8,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const response = await fetch(`https://assets.vercel.com/${key}`)
+  const response = await fetch(`https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/${key}`)
   return NextResponse.next(response)
 
 }
+
+// handler
+

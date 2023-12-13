@@ -2,44 +2,32 @@ import { Frame, Movie } from "@prisma/client";
 import Image from "next/image";
 interface MovieProps {
   movie: Movie,
-  preferredFrame: Frame | null
+  preferredFrame: Frame
+  className?: string
+  onClick: () => void
+
 }
 
-export default function MovieComponent({ movie, preferredFrame }: MovieProps) {
+export default function MovieComponent({ movie, preferredFrame, className, onClick
 
-  const onClick = () => { }
+}: MovieProps) {
+
+
+  // card image (preferredFrame or first frame, full width, full height), on hover display title
 
   return (
-    <div
-      className="w-full relative group h-96"
-      onClick={onClick}
+    <div className={`relative group block cursor-pointer ${className}`} onClick={onClick}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-0 opacity-0 group-hover:bg-opacity-50 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity">
-        <p
-          className="group-hover:opacity-100 opacity-0 transform group-hover:translate-y-0 translate-y-1/2 transition-transform duration-600 ease-in-out"
-          style={{
-            transitionProperty: "opacity transform",
-            transitionDuration: "300ms",
-          }}
-        >
-          {movie.title}
-        </p>
-      </div>
-      <div className="absolute inset-0 bg-black bg-opacity-0 opacity-0 group-hover:bg-opacity-50 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity">
-        <p
-          className="group-hover:opacity-100 opacity-0 transform group-hover:translate-y-0 translate-y-1/2 transition-transform duration-600 ease-in-out"
-          style={{
-            transitionProperty: "opacity transform",
-            transitionDuration: "300ms",
-          }}
-        >
-          {movie.year}
-        </p>
-        {preferredFrame && (
-          <div className="absolute inset-0 bg-black bg-opacity-0 opacity-0 group-hover:bg-opacity-50 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity">
-            <Image src={preferredFrame.image} layout="fill" objectFit="cover" alt={movie.title} />
-          </div>
-        )}
+      <Image
+        src={preferredFrame.image}
+        alt={movie.title}
+        layout="fill"
+        objectFit="cover"
+        className="absolute inset-0 object-cover w-full
+        h-fullrounded-md"
+      />
+      <div className="relative group-hover:opacity-100 opacity-0 align-bottom bg-gray-900 bg-opacity-10 w-full h-full rounded-md">
+        <p className="text-white text-center text-sm">{movie.title}</p>
       </div>
     </div>
   );

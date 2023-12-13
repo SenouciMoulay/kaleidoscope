@@ -1,20 +1,22 @@
 
 import React from 'react'
 interface ColorProps {
+  id?: string;
   color?: string;
-  onPress?: () => void;
+  onChange?: (selected: boolean) => void;
   selected?: boolean;
 }
 
 
 /// <reference types="react" />
-export function Color({ color, onPress, selected }: ColorProps) {
+export function Color({ color, onChange, selected }: ColorProps) {
 
   // if color is "F0F0F0" display a circle half white half black (left half white, right half black)
 
   return (
-    <div className={`w-8 h-8 m-2 rounded-full hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-110 shadow-md cursor-pointer hover:-translate-y-1 ${selected ? "scale-125  " : ""} flex flex-row relative`}
-      onClick={onPress}
+    <div className={
+      `w-8 h-8 m-2 rounded-full hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-110 shadow-md cursor-pointer hover:-translate-y-1 ${selected ? "scale-125  " : ""} flex flex-row relative`}
+      onClick={() => onChange && onChange(!selected)}
       style={{ backgroundColor: color }}
     >
       {color === "#F0F0F0" && (

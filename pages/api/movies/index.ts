@@ -32,28 +32,27 @@ export async function GET(
   res.status(200).json({ movies })
 }
 
-type CreationActor = {
+export type CreationActor = {
   firstName: string
   lastName: string
 }
 
-type CreationDirector = {
+export type CreationDirector = {
   firstName: string
   lastName: string
 }
 
-type CreationColor = {
+export type CreationColor = {
   hex: string
   name: string
 }
 
-type CreationFrame = {
+export type CreationFrame = {
   key: string
-  time: number
   isPreferred: boolean
 }
 
-type CreationMovie = {
+export type CreationMovie = {
   title: string
   year: number
   actors: CreationActor[]
@@ -66,8 +65,6 @@ export async function POST(
   req: NextApiRequest, res: NextApiResponse
 ) {
   const { title, year, actors, frames, colors, directors } = req.body as CreationMovie
-
-
 
   const movie = await prisma.movie.create({
     data: {
@@ -126,7 +123,6 @@ export async function POST(
           .map(frame => {
             return {
               image: frame.key,
-              time: frame.time,
             }
           }),
       },
@@ -158,6 +154,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (req.method) {
     case "GET":
       await GET(req, res)
+      break
+    case "POST":
+      await POST(req, res)
       break
     default:
       res.status(405).end()

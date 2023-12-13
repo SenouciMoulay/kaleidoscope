@@ -1,10 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { v4 as uuidv4 } from 'uuid';
+import { useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { UploaderPopUp } from '../Image/UploaderPopUp';
-import { ColorWheel } from "../color/ColorWheel";
+import { ColorChoose } from "../color/ColorChoose";
+import { DropZone } from "../component/drop-zone";
+import { PutBlobResult } from "@vercel/blob"
+import { v4 as uuidv4 } from 'uuid';
+
 
 const movieSchema = z.object({
   title: z.string(),
@@ -15,43 +17,92 @@ const movieSchema = z.object({
   colors: z.array(z.string()),
 });
 
-type MovieFormValues = z.infer<typeof movieSchema>;
+export type MovieFormValues = z.infer<typeof movieSchema>;
 
 interface MovieFormProps {
   defaultValues?: MovieFormValues;
-  onSubmit?: (data: MovieFormValues) => void;
+  onSubmit?: (data: MovieFormValues) => Promise<void>;
 }
 
 export function MovieForm(
   { defaultValues, onSubmit }: MovieFormProps
 ) {
-  onSubmit = onSubmit ?? ((data) => console.log(data));
+  onSubmit = onSubmit ?? (async (data) => console.log(data));
 
-  const { register, handleSubmit, formState: { errors } } = useForm<MovieFormValues>({
-    resolver: zodResolver(movieSchema),
-    defaultValues: defaultValues,
-  });
-
-  const [openFrameUploader, setOpenFrameUploader] = useState(false);
-  const [openPreferredFrameUploader, setOpenPreferredFrameUploader] = useState(false);
-
-
-  const [openColorPicker, setOpenColorPicker] = useState(false);
-
-  const [frames, setFrames] = useState<string[]>([]);
+  const {
+    control,
+    register, handleSubmit, formState: { errors } } = useForm<MovieFormValues>({
+      resolver: zodResolver(movieSchema),
+      defaultValues: defaultValues
+    });
 
   const [loading, setLoading] = useState(false);
 
   function submit(data: MovieFormValues) {
     setLoading(true);
+    data.frames = ["https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/cb4b2cfe-f1da-4332-bd17-7122d1f23f45-ggzcKLzs00FFmkxHHoxw50tWmBXljV", "https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/73fccfb7-ea10-4e2f-91e1-a60ee03db452-hdlMkXZfV41wytSDoWTQHa4rSW8kH7", "https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/26ed45aa-21d8-4429-9a55-5b98323abf61-FyAIyMP8tE3CthO8uEgb1Y23F7j5F5"];
+
+    // const covers: Array<File> = []
+    // const images: Array<File> = []
+    // frames.forEach((frame) => {
+    //   if (frame.name.includes("cover")) {
+    //     covers.push(frame);
+    //   } else {
+    //     images.push(frame);
+    //   }
+    // });
+    // if (covers.length == 0) {
+    //   throw new Error("At least one cover is required")
+    // }
+
+    // const coverUploadPromises: Array<Promise<PutBlobResult>> = []
+    // covers.forEach((cover) => {
+    //   const formData = new FormData();
+    //   formData.append("file", cover);
+    //   coverUploadPromises.push(
+    //     fetch("/api/upload", {
+    //       method: "POST",
+    //       body: formData,
+    //     }).then((res) => res.json())
+    //   )
+    // });
+
+    // const imageUploadPromises: Array<Promise<PutBlobResult>> = []
+    // images.forEach((image) => {
+    //   const formData = new FormData();
+    //   formData.append("file", image);
+    //   imageUploadPromises.push(
+    //     fetch("/api/upload", {
+    //       method: "POST",
+    //       body: formData,
+    //     }).then((res) => res.json())
+
+    //   )
+    // })
+
+    // Promise.all(coverUploadPromises).then((coverUrls) => {
+    //   Promise.all(imageUploadPromises).then((imageUrls) => {
+    //     const coverUrlsString = coverUrls.map((coverUrl) => coverUrl.url).join(",")
+    //     const imageUrlsString = imageUrls.map((imageUrl) => imageUrl.url).join(",")
+    //     data.frames = [coverUrlsString, imageUrlsString]
+
+    //         onSubmit?.(data).finally(() => setLoading(false));
+    //       })
+    // })
+
+    onSubmit?.(data).finally(() => setLoading(false));
 
 
   }
 
+  const formRef = useRef<HTMLFormElement>(null);
+
+
+  const [frames, setFrames] = useState<File[]>([]);
 
   return (
     <div className="flex flex-col space-y-4">
-      <form onSubmit={handleSubmit(submit)} >
+      <form onSubmit={handleSubmit(submit)} ref={formRef} className="flex flex-col space-y-4">
         <div className="flex flex-col space-y-4">
           <div className="flex flex-col space-y-1">
             <label htmlFor="title">Title</label>
@@ -69,18 +120,18 @@ export function MovieForm(
             <input
               id="year"
               type="number"
-              {...register("year")}
+              {...register("year", { valueAsNumber: true })}
               className="border border-gray-300 rounded-md"
               disabled={loading}
             />
             {errors.year && <span className="text-red-500">{errors.year.message}</span>}
           </div>
-          <div className="flex flex-col space-y-1">
+          <div className="flex flex-col space-y-1" >
             <label htmlFor="directors">Directors</label>
             <input
               id="directors"
               type="text"
-              {...register("directors")}
+              {...register("directors", { setValueAs: (value) => value.split(",") })}
               className="border border-gray-300 rounded-md"
               disabled={loading}
             />
@@ -91,71 +142,63 @@ export function MovieForm(
             <input
               id="actors"
               type="text"
-              {...register("actors")}
+              {...register("actors", { setValueAs: (value) => value.split(",") })}
               className="border border-gray-300 rounded-md"
               disabled={loading}
             />
             {errors.actors && <span className="text-red-500">{errors.actors.message}</span>}
           </div>
-          <div className="flex flex-col space-y-1">
-            <label htmlFor="frames">Frames</label>
-            <button
-              type="button"
-              className="p-2 rounded-lg bg-violet-500 hover:bg-violet-600 text-violet-50"
-              onClick={() => setOpenFrameUploader(true)}
-              disabled={loading}
-            >
-              Select
-            </button>
-            {errors.frames && <span className="text-red-500">{errors.frames.message}</span>}
 
-          </div>
-          <div className="flex flex-col space-y-1">
-            <label htmlFor="frames">Cover</label>
-            <button
-              type="button"
-              className="p-2 rounded-lg bg-violet-500 hover:bg-violet-600 text-violet-50"
-              onClick={() => setOpenPreferredFrameUploader(true)}
-              disabled={loading}
-            >
-              Select
-            </button>
-            {errors.frames && <span className="text-red-500">{errors.frames.message}</span>}
-
-          </div>
           <div className="flex flex-col space-y-1">
             <label htmlFor="colors">Colors</label>
-            <ColorWheel />
-
+            <Controller
+              name="colors"
+              control={control}
+              render={({ field }) => (
+                <ColorChoose
+                  id="colors"
+                  defaultValue={defaultValues?.colors}
+                  onChange={(colors) => {
+                    field.onChange(colors);
+                  }}
+                  disabled={loading}
+                />
+              )}
+            />
             {errors.colors && <span className="text-red-500">{errors.colors.message}</span>}
           </div>
+          {/* frame */}
+          <div className="flex flex-col space-y-1">
+            <label htmlFor="frames">Frames</label>
+            <Controller
+              name="frames"
+              control={control}
+              render={({ field }) => (
+                <DropZone
+                  id="frames"
+                  onChange={(frames) => {
+                    field.onChange(frames.map((file) => file.name));
+                    setFrames(frames);
+                  }}
+                  disabled={loading}
+                />
+              )}
+            />
+
+
+            {errors.frames && <span className="text-red-500">{errors.frames.message}</span>}
+          </div>
+
+          <button
+            type="submit"
+            className="p-2 rounded-lg bg-green-500 hover:bg-green-600 text-green-50"
+            disabled={loading}
+          >
+            Submit
+          </button>
         </div>
+
       </form>
-      <UploaderPopUp
-        open={openPreferredFrameUploader}
-        onClose={() => setOpenPreferredFrameUploader(false)}
-        onUpload={(files) => {
-          console.log(files);
-          const keys = files.map((file) => {
-            const key = uuidv4();
-            return key;
-          });
-          setFrames([...frames, ...keys]);
-          setOpenPreferredFrameUploader(false);
-        }} />
-      <UploaderPopUp
-        open={openFrameUploader}
-        onClose={() => setOpenFrameUploader(false)}
-        multiple
-        onUpload={(files) => {
-          console.log(files);
-          const keys = files.map((file) => {
-            const key = uuidv4();
-            return key;
-          });
-          setFrames([...frames, ...keys]);
-          setOpenFrameUploader(false);
-        }} />
 
     </div>
   );
