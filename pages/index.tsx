@@ -21,7 +21,7 @@ export async function getStaticProps() {
   }
   return {
     props: {
-      movies: movies10
+      movies: movies
     },
     revalidate: 1
   }

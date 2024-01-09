@@ -40,57 +40,59 @@ export function MovieForm(
 
   function submit(data: MovieFormValues) {
     setLoading(true);
-    data.frames = ["https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/cb4b2cfe-f1da-4332-bd17-7122d1f23f45-ggzcKLzs00FFmkxHHoxw50tWmBXljV", "https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/73fccfb7-ea10-4e2f-91e1-a60ee03db452-hdlMkXZfV41wytSDoWTQHa4rSW8kH7", "https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/26ed45aa-21d8-4429-9a55-5b98323abf61-FyAIyMP8tE3CthO8uEgb1Y23F7j5F5"];
+    // data.frames = ['https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/892a80f1-e586-4421-8168-4f38c564b88a-Cb1ouHDvRObnpFuhb6ASDa21LjmTCW',
+    // 'https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/7e4795c3-0b88-427f-b19a-c0a2e0703a2b-ykYTZ16ZG83rv28QrB2yilpLdKiO9Y',
+    // 'https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/e41c2944-2a76-4a55-a346-f79cb99cdb32-LvPueYN3aKmOnbnZxpoksZLVwbu6Rk',
+    //   'https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/f091d15a-f9d8-4dc4-a9c7-26ee290a8f21-0BhNSHLubqopKy5ZcWJROuWsi2xy99',
+    // ]
 
-    // const covers: Array<File> = []
-    // const images: Array<File> = []
-    // frames.forEach((frame) => {
-    //   if (frame.name.includes("cover")) {
-    //     covers.push(frame);
-    //   } else {
-    //     images.push(frame);
-    //   }
-    // });
-    // if (covers.length == 0) {
-    //   throw new Error("At least one cover is required")
-    // }
+    const covers: Array<File> = []
+    const images: Array<File> = []
+    frames.forEach((frame) => {
+      if (frame.name.includes("cover")) {
+        covers.push(frame);
+      } else {
+        images.push(frame);
+      }
+    });
+    if (covers.length == 0) {
+      throw new Error("At least one cover is required")
+    }
 
-    // const coverUploadPromises: Array<Promise<PutBlobResult>> = []
-    // covers.forEach((cover) => {
-    //   const formData = new FormData();
-    //   formData.append("file", cover);
-    //   coverUploadPromises.push(
-    //     fetch("/api/upload", {
-    //       method: "POST",
-    //       body: formData,
-    //     }).then((res) => res.json())
-    //   )
-    // });
+    const coverUploadPromises: Array<Promise<PutBlobResult>> = []
+    covers.forEach((cover) => {
+      const formData = new FormData();
+      formData.append("file", cover);
+      coverUploadPromises.push(
+        fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        }).then((res) => res.json())
+      )
+    });
 
-    // const imageUploadPromises: Array<Promise<PutBlobResult>> = []
-    // images.forEach((image) => {
-    //   const formData = new FormData();
-    //   formData.append("file", image);
-    //   imageUploadPromises.push(
-    //     fetch("/api/upload", {
-    //       method: "POST",
-    //       body: formData,
-    //     }).then((res) => res.json())
+    const imageUploadPromises: Array<Promise<PutBlobResult>> = []
+    images.forEach((image) => {
+      const formData = new FormData();
+      formData.append("file", image);
+      imageUploadPromises.push(
+        fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        }).then((res) => res.json())
 
-    //   )
-    // })
+      )
+    })
 
-    // Promise.all(coverUploadPromises).then((coverUrls) => {
-    //   Promise.all(imageUploadPromises).then((imageUrls) => {
-    //     const coverUrlsString = coverUrls.map((coverUrl) => coverUrl.url).join(",")
-    //     const imageUrlsString = imageUrls.map((imageUrl) => imageUrl.url).join(",")
-    //     data.frames = [coverUrlsString, imageUrlsString]
+    Promise.all(coverUploadPromises).then((coverUrls) => {
+      Promise.all(imageUploadPromises).then((imageUrls) => {
+        const coverUrlsString = coverUrls.map((coverUrl) => coverUrl.url)
+        const imageUrlsString = imageUrls.map((imageUrl) => imageUrl.url)
+        data.frames = [...coverUrlsString, ...imageUrlsString]
 
-    //         onSubmit?.(data).finally(() => setLoading(false));
-    //       })
-    // })
-
-    onSubmit?.(data).finally(() => setLoading(false));
+            onSubmit?.(data).finally(() => setLoading(false));
+          })
+    })
 
 
   }
@@ -110,7 +112,7 @@ export function MovieForm(
               id="title"
               type="text"
               {...register("title")}
-              className="border border-gray-300 rounded-md"
+              className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
             {errors.title && <span className="text-red-500">{errors.title.message}</span>}
@@ -121,7 +123,7 @@ export function MovieForm(
               id="year"
               type="number"
               {...register("year", { valueAsNumber: true })}
-              className="border border-gray-300 rounded-md"
+              className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
             {errors.year && <span className="text-red-500">{errors.year.message}</span>}
@@ -132,7 +134,7 @@ export function MovieForm(
               id="directors"
               type="text"
               {...register("directors", { setValueAs: (value) => value.split(",") })}
-              className="border border-gray-300 rounded-md"
+              className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
             {errors.directors && <span className="text-red-500">{errors.directors.message}</span>}
@@ -143,7 +145,7 @@ export function MovieForm(
               id="actors"
               type="text"
               {...register("actors", { setValueAs: (value) => value.split(",") })}
-              className="border border-gray-300 rounded-md"
+              className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
             {errors.actors && <span className="text-red-500">{errors.actors.message}</span>}
