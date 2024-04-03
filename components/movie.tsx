@@ -13,10 +13,10 @@ export default function MovieComponent({ movie, preferredFrame, className, onCli
 }: MovieProps) {
 
 
-  // card image (preferredFrame or first frame, full width, full height), on hover display title
 
   return (
-    <div className={`relative group block cursor-pointer ${className}`} onClick={onClick}
+    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+    <div className={`relative group block cursor-pointer ${className} rounded-sm m-1 `} onClick={onClick}
     >
       <Image
         src={preferredFrame.image}
@@ -24,7 +24,7 @@ export default function MovieComponent({ movie, preferredFrame, className, onCli
         layout="fill"
         objectFit="cover"
         className="absolute inset-0 object-cover w-full
-        h-fullrounded-md"
+        h-full rounded-md"
       />
       <div className="relative group-hover:opacity-100 opacity-0 align-bottom bg-gray-900 bg-opacity-10 w-full h-full rounded-md">
         <p className="text-white text-center text-sm">{movie.title}</p>

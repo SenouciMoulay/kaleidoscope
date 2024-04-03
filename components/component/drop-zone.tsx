@@ -24,7 +24,6 @@ export function DropZone(
       <Card className="flex flex-col items-center py-10 px-5 space-y-8 bg-gray-50 rounded-lg shadow">
         <CardHeader className="text-2xl font-bold text-center">Image Upload</CardHeader>
         <CardContent className="flex flex-col items-center space-y-4">
-
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor={id}>Select an image to upload</Label>
             <Input

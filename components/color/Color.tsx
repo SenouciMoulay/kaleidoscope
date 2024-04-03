@@ -16,7 +16,7 @@ export function Color({ color, onChange, selected }: ColorProps) {
   return (
     <div className={
       `w-8 h-8 m-2 rounded-full hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-110 shadow-md cursor-pointer hover:-translate-y-1 ${selected ? "scale-125  " : ""} flex flex-row relative`}
-      onClick={() => onChange && onChange(!selected)}
+      onKeyDown={() => onChange?.(!selected)}
       style={{ backgroundColor: color }}
     >
       {color === "#F0F0F0" && (
