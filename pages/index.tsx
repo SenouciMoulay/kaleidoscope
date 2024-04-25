@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import { Video } from "@/components/ui/video";
 import { Volume2, VolumeX } from 'lucide-react';
 import {Audio} from "@/components/ui/audio";
+import {ColorFilter} from "@/components/colorFilter/colorFilter";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +79,7 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
                          height={350}/>
                 </div>
             </div>
+            <ColorFilter/>
             <button
                 className="fixed bottom-4 left-4 z-10 text-white font-bold py-2 px-4 rounded"
                 onClick={() => {
