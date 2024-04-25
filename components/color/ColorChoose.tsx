@@ -7,7 +7,7 @@ const colors = [
   "#fcff00",
   "#ff3526",
   "#2e89d8",
-  "#F0F0F0"
+  "#F0F0F0",
 ];
 
 // extends input string
@@ -23,13 +23,14 @@ export function ColorChoose({
   disabled,
   onChange,
   defaultValue,
-}
-  : ColorChooseProps) {
+}: ColorChooseProps) {
   const [selected, setSelected] = useState<string[]>(defaultValue ?? []);
 
   return (
-    <div className="flex flex-row flex-wrap gap-2
-    relative w-full h-12 overflow-hidden rounded-md border border-gray-300">
+    <div
+      className="flex flex-row flex-wrap gap-2
+    relative w-full h-12 overflow-hidden rounded-md border border-gray-300"
+    >
       {disabled && (
         <div className="absolute w-full h-full bg-gray-100 opacity-50 z-10" />
       )}
