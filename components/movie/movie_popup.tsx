@@ -12,22 +12,22 @@ function MoviePopup(
   { movie, className, close }: MoviePopupProps
 ) {
 
-  const [frame, setFrame] = useState<Frame | null>();
+  const [frames, setFrames] = useState<Frame[]>([]);
 
   const [index, setIndex] = useState(0);
 
+  const [aspectRatio, setAspectRatio] = useState(1)
+
   // get the frame at index (/api/movies/:id/frames/:index)
   useEffect(() => {
-    try {
-      if (movie) {
-        fetch(`/api/movies/${movie.id}/frames/${index}`)
+        function getAspectRatio(){
+          const {innerWidth, innerHeight} = window
+          setAspectRatio(innerWidth/innerHeight)
+        }
+        fetch(`/api/movies/${movie.id}/frames`)
           .then((res) => res.json())
-          .then((frame) => setFrame(frame))
-      }
-    } catch (err) {
-      setIndex(0);
-    }
-  }, [movie, index]);
+          .then(($frames) => setFrames($frames))
+  }, [movie]);
 
   function handleClick(Event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     // if on left : index - 1
@@ -47,23 +47,24 @@ function MoviePopup(
       }
     }
     else {
+      if(index<frames.length - 1)
       setIndex(index + 1);
     }
 
   }
 
   return (
-    <div className={`fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-90 z-50 ${className ?? ''}`}>
-      <div className="relative w-full h-full"
+    <div className={`flex justify-center items-center bg-black/80 fixed top-0 left-0 w-full h-full z-50 ${className ?? ''}`}>
+      <div className=" relative w-[1000px] h-[600px]"
         onClick={handleClick}
       >
-        {frame && <Image
-          src={frame.image}
+        {frames[index] && <Image
+          src={frames[index].image}
           alt={movie.title}
           layout="fill"
-          objectFit="contain"
-          className="absolute inset-0 object-contain w-full
-          h-fullrounded-md"
+          objectFit="cover"
+          className="absolute inset-0 w-full
+          h-full rounded-lg"
         />}
       </div>
     </div>
