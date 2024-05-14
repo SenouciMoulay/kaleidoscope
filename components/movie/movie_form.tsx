@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 import { ColorChoose } from "../color/ColorChoose";
 import { DropZone } from "../component/drop-zone";
-import { PutBlobResult } from "@vercel/blob"
-import { v4 as uuidv4 } from 'uuid';
-
+import { PutBlobResult } from "@vercel/blob";
+import { v4 as uuidv4 } from "uuid";
 
 const movieSchema = z.object({
   title: z.string(),
@@ -24,30 +23,26 @@ interface MovieFormProps {
   onSubmit?: (data: MovieFormValues) => Promise<void>;
 }
 
-export function MovieForm(
-  { defaultValues, onSubmit }: MovieFormProps
-) {
+export function MovieForm({ defaultValues, onSubmit }: MovieFormProps) {
   onSubmit = onSubmit ?? (async (data) => console.log(data));
 
   const {
     control,
-    register, handleSubmit, formState: { errors } } = useForm<MovieFormValues>({
-      resolver: zodResolver(movieSchema),
-      defaultValues: defaultValues
-    });
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<MovieFormValues>({
+    resolver: zodResolver(movieSchema),
+    defaultValues: defaultValues,
+  });
 
   const [loading, setLoading] = useState(false);
 
   function submit(data: MovieFormValues) {
     setLoading(true);
-    // data.frames = ['https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/892a80f1-e586-4421-8168-4f38c564b88a-Cb1ouHDvRObnpFuhb6ASDa21LjmTCW',
-    // 'https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/7e4795c3-0b88-427f-b19a-c0a2e0703a2b-ykYTZ16ZG83rv28QrB2yilpLdKiO9Y',
-    // 'https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/e41c2944-2a76-4a55-a346-f79cb99cdb32-LvPueYN3aKmOnbnZxpoksZLVwbu6Rk',
-    //   'https://ijgjorrbv0sd9i61.public.blob.vercel-storage.com/f091d15a-f9d8-4dc4-a9c7-26ee290a8f21-0BhNSHLubqopKy5ZcWJROuWsi2xy99',
-    // ]
 
-    const covers: Array<File> = []
-    const images: Array<File> = []
+    const covers: Array<File> = [];
+    const images: Array<File> = [];
     frames.forEach((frame) => {
       if (frame.name.includes("cover")) {
         covers.push(frame);
@@ -56,10 +51,10 @@ export function MovieForm(
       }
     });
     if (covers.length == 0) {
-      throw new Error("At least one cover is required")
+      throw new Error("At least one cover is required");
     }
 
-    const coverUploadPromises: Array<Promise<PutBlobResult>> = []
+    const coverUploadPromises: Array<Promise<PutBlobResult>> = [];
     covers.forEach((cover) => {
       const formData = new FormData();
       formData.append("file", cover);
@@ -68,10 +63,10 @@ export function MovieForm(
           method: "POST",
           body: formData,
         }).then((res) => res.json())
-      )
+      );
     });
 
-    const imageUploadPromises: Array<Promise<PutBlobResult>> = []
+    const imageUploadPromises: Array<Promise<PutBlobResult>> = [];
     images.forEach((image) => {
       const formData = new FormData();
       formData.append("file", image);
@@ -80,31 +75,34 @@ export function MovieForm(
           method: "POST",
           body: formData,
         }).then((res) => res.json())
-
-      )
-    })
+      );
+    });
 
     Promise.all(coverUploadPromises).then((coverUrls) => {
       Promise.all(imageUploadPromises).then((imageUrls) => {
-        const coverUrlsString = coverUrls.map((coverUrl) => coverUrl.url)
-        const imageUrlsString = imageUrls.map((imageUrl) => imageUrl.url)
-        data.frames = [...coverUrlsString, ...imageUrlsString]
+        const coverUrlsString = coverUrls.map((coverUrl) => coverUrl.url);
+        const imageUrlsString = imageUrls.map((imageUrl) => imageUrl.url);
+        data.frames = [...coverUrlsString, ...imageUrlsString];
 
-            onSubmit?.(data).finally(() => setLoading(false));
-          })
-    })
-
-
+        onSubmit?.(data).finally(() => setLoading(false));
+      });
+    });
   }
 
   const formRef = useRef<HTMLFormElement>(null);
-
 
   const [frames, setFrames] = useState<File[]>([]);
 
   return (
     <div className="flex flex-col space-y-4">
-      <form onSubmit={handleSubmit(submit)} ref={formRef} className="flex flex-col space-y-4">
+      {loading && (
+        <div className="absolute w-full h-full bg-gray-100 opacity-50 z-10" />
+      )}
+      <form
+        onSubmit={handleSubmit(submit)}
+        ref={formRef}
+        className="flex flex-col space-y-4"
+      >
         <div className="flex flex-col space-y-4">
           <div className="flex flex-col space-y-1">
             <label htmlFor="title">Title</label>
@@ -115,7 +113,9 @@ export function MovieForm(
               className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
-            {errors.title && <span className="text-red-500">{errors.title.message}</span>}
+            {errors.title && (
+              <span className="text-red-500">{errors.title.message}</span>
+            )}
           </div>
           <div className="flex flex-col space-y-1">
             <label htmlFor="year">Year</label>
@@ -126,29 +126,39 @@ export function MovieForm(
               className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
-            {errors.year && <span className="text-red-500">{errors.year.message}</span>}
+            {errors.year && (
+              <span className="text-red-500">{errors.year.message}</span>
+            )}
           </div>
-          <div className="flex flex-col space-y-1" >
+          <div className="flex flex-col space-y-1">
             <label htmlFor="directors">Directors</label>
             <input
               id="directors"
               type="text"
-              {...register("directors", { setValueAs: (value) => value.split(",") })}
+              {...register("directors", {
+                setValueAs: (value) => value.split(","),
+              })}
               className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
-            {errors.directors && <span className="text-red-500">{errors.directors.message}</span>}
+            {errors.directors && (
+              <span className="text-red-500">{errors.directors.message}</span>
+            )}
           </div>
           <div className="flex flex-col space-y-1">
             <label htmlFor="actors">Actors</label>
             <input
               id="actors"
               type="text"
-              {...register("actors", { setValueAs: (value) => value.split(",") })}
+              {...register("actors", {
+                setValueAs: (value) => value.split(","),
+              })}
               className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
-            {errors.actors && <span className="text-red-500">{errors.actors.message}</span>}
+            {errors.actors && (
+              <span className="text-red-500">{errors.actors.message}</span>
+            )}
           </div>
 
           <div className="flex flex-col space-y-1">
@@ -167,7 +177,9 @@ export function MovieForm(
                 />
               )}
             />
-            {errors.colors && <span className="text-red-500">{errors.colors.message}</span>}
+            {errors.colors && (
+              <span className="text-red-500">{errors.colors.message}</span>
+            )}
           </div>
           {/* frame */}
           <div className="flex flex-col space-y-1">
@@ -187,8 +199,9 @@ export function MovieForm(
               )}
             />
 
-
-            {errors.frames && <span className="text-red-500">{errors.frames.message}</span>}
+            {errors.frames && (
+              <span className="text-red-500">{errors.frames.message}</span>
+            )}
           </div>
 
           <button
@@ -199,9 +212,7 @@ export function MovieForm(
             Submit
           </button>
         </div>
-
       </form>
-
     </div>
   );
 }

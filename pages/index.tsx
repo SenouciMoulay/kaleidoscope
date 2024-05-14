@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import MovieComponent from "@/components/movie";
 import MoviePopable from "@/components/movie/movie_popup";
-import { Frame, Movie, PrismaClient } from '@prisma/client';
+import { Frame, Movie, PrismaClient } from "@prisma/client";
 import { InferGetStaticPropsType } from "next";
 import { Video } from "@/components/ui/video";
 import { Volume2, VolumeX } from 'lucide-react';

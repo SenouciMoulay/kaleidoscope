@@ -1,7 +1,6 @@
 import { MovieForm, MovieFormValues } from "@/components/movie/movie_form";
 import { CreationMovie } from "@/pages/api/movies";
 
-
 export const colors = [
   { hex: "#00b572", name: "Green" },
   { hex: "#ffa901", name: "Yellow" },
@@ -9,12 +8,10 @@ export const colors = [
   { hex: "#fcff00", name: "Yellow" },
   { hex: "#ff3526", name: "Red" },
   { hex: "#2e89d8", name: "Blue" },
-  { hex: "#F0F0F0", name: "Black'n White" }
+  { hex: "#F0F0F0", name: "Black'n White" },
 ];
 
-
-export default function NewMovie(props) {
-
+export default function NewMovie() {
   async function onSubmit(data: MovieFormValues) {
     // POST /api/movies
     try {
@@ -25,69 +22,59 @@ export default function NewMovie(props) {
           if (actor.split(" ").length == 1) {
             return {
               firstName: actor,
-              lastName: ""
-            }
-          }
-          else if (actor.split(" ").length == 2) {
+              lastName: "",
+            };
+          } else if (actor.split(" ").length == 2) {
             return {
               firstName: actor.split(" ")[0],
-              lastName: actor.split(" ")[1]
-            }
-          }
-          else {
+              lastName: actor.split(" ")[1],
+            };
+          } else {
             return {
               firstName: actor.split(" ")[0],
-              lastName: actor.split(" ").slice(1).join(" ")
-            }
+              lastName: actor.split(" ").slice(1).join(" "),
+            };
           }
         }),
         directors: data.directors.map((director) => {
           if (director.split(" ").length == 1) {
             return {
               firstName: director,
-              lastName: ""
-            }
-          }
-          else if (director.split(" ").length == 2) {
+              lastName: "",
+            };
+          } else if (director.split(" ").length == 2) {
             return {
               firstName: director.split(" ")[0],
-              lastName: director.split(" ")[1]
-            }
-          }
-          else {
+              lastName: director.split(" ")[1],
+            };
+          } else {
             return {
               firstName: director.split(" ")[0],
-              lastName: director.split(" ").slice(1).join(" ")
-            }
+              lastName: director.split(" ").slice(1).join(" "),
+            };
           }
-        }
-        ),
+        }),
         frames: data.frames.map((frame, index) => {
           return {
             key: frame,
-            isPreferred: index == 0
-          }
+            isPreferred: index == 0,
+          };
         }),
         colors: data.colors.map((color) => {
           return {
             hex: color,
-            name: colors.find((c) => c.hex == color)!.name
-          }
-        }
-        )
-      }
+            name: colors.find((c) => c.hex == color)!.name,
+          };
+        }),
+      };
 
-
-      const res = await fetch('/api/movies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(
-          validData
-        ),
+      const res = await fetch("/api/movies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(validData),
       });
       const resData = await res.json();
       console.log(resData);
-
     } catch (error) {
       console.log(error);
     }
