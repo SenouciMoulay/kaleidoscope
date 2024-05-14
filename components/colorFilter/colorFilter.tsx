@@ -10,7 +10,7 @@ export const ColorFilter = () => {
     };
 
     return (
-        <div className={'grid grid-cols-8 pb-44'}>
+        <div className={'grid grid-cols-8 fixed top-3/4 left-4'}>
             {colors.map((color, index, array) => (
                 <span
                     key={color}

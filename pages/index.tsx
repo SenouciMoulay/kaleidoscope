@@ -7,8 +7,8 @@ import { InferGetStaticPropsType } from "next";
 import { Video } from "@/components/ui/video";
 import { Volume2, VolumeX } from 'lucide-react';
 import {Audio} from "@/components/ui/audio";
+import {ColorFilter} from "@/components/colorFilter/colorFilter";
 import WelcomeComponent from "@/components/welcome/welcome_component";
-import SearchModal from "@/components/searchModal/SearchModal";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +44,6 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
     const [isMusicPlaying, setIsMusicPlaying] = useState(false);
     const [showWelcome, setShowWelcome] = useState(true);
     const audio = React.useRef<HTMLAudioElement>(null)
-    const [isSearchModalOpen, setSearchModalOpen] = useState(false);
 
     const playMusic = () => {
         if(!audio.current) return;
@@ -96,13 +95,12 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
                     <>
                         <div className="flex flex-col items-center justify-center min-h-screen py-2">
                             <div className="w-[600px] h-[250px] flex items-center justify-center relative">
-                                <Video size={{width: 470}} autoPlay src="/Video_kaléidoscope.mp4" type="video/mp4" muted
-                                       loop/>
-                                <img style={{position: "absolute"}} src={"/assets/logo_transparent.svg"} alt={"hgv"}
-                                     width={700}
+                                <Video size={{width: 470}} autoPlay src="/Video_kaléidoscope.mp4" type="video/mp4" muted loop/>
+                                <img style={{position: "absolute"}} src={"/assets/logo_kaleidoscope.svg"} alt={"hgv"} width={700}
                                      height={350}/>
                             </div>
                         </div>
+                        <ColorFilter/>
                         <button
                             className="fixed bottom-4 left-4 z-10 text-white font-bold py-2 px-4 rounded"
                             onClick={() => {
@@ -129,17 +127,6 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
                             ))}
                         </div>
                         <MoviePopable movie={selectedMovie ?? undefined} close={() => setSelectedMovie(null)}/>
-                        <button
-                            className="fixed top-4 right-4 z-20 text-white bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded"
-                            onClick={() => setSearchModalOpen(true)}
-                        >
-                            Rechercher
-                        </button>
-
-                        <SearchModal
-                            isOpen={isSearchModalOpen}
-                            onClose={() => setSearchModalOpen(false)}
-                        />
                     </>
                 )}
             </motion.div>
