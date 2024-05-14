@@ -12,6 +12,7 @@ interface MoviePopupProps {
 function MoviePopup({ movie, className, close }: MoviePopupProps) {
   const [frames, setFrames] = useState<Frame[]>([]);
   const [index, setIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`/api/movies/${movie.id}/frames`)
@@ -43,12 +44,14 @@ function MoviePopup({ movie, className, close }: MoviePopupProps) {
   function goToPrevious() {
     if (index !== 0) {
       setIndex(index - 1);
+      setLoading(true);
     }
   }
 
   function goToNext() {
     if (index < frames.length - 1) {
       setIndex(index + 1);
+      setLoading(true);
     }
   }
 
@@ -57,10 +60,14 @@ function MoviePopup({ movie, className, close }: MoviePopupProps) {
           className={`flex justify-center items-center bg-black/80 fixed top-0 left-0 w-full h-full z-50 ${className ?? ''}`}
       >
         <X
-            className="absolute text-yellow-500 top-1 right-1 cursor-pointer"
+            size={30}
+            className="absolute text-yellow-500 top-3.5 right-3.5 cursor-pointer"
             onClick={close}
         />
         <div className="relative w-[1000px] h-[600px]">
+          {loading && (
+              <div className="absolute inset-0 w-full h-full bg-gray-600 opacity-20 animate-pulse rounded-lg"></div>
+          )}
           {frames[index] && (
               <Image
                   src={frames[index].image}
@@ -68,18 +75,23 @@ function MoviePopup({ movie, className, close }: MoviePopupProps) {
                   layout="fill"
                   objectFit="cover"
                   className="absolute inset-0 w-full h-full rounded-lg select-none pointer-events-none"
+                  onLoadingComplete={() => setLoading(false)}
               />
           )}
-          <ArrowLeft
-              size={35}
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 text-yellow-500 opacity-60 cursor-pointer"
-              onClick={goToPrevious}
-          />
-          <ArrowRight
-              size={35}
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 text-yellow-500 opacity-60 cursor-pointer"
-              onClick={goToNext}
-          />
+          {!loading && (
+              <>
+                <ArrowLeft
+                    size={35}
+                    className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 text-yellow-500 opacity-60 cursor-pointer"
+                    onClick={goToPrevious}
+                />
+                <ArrowRight
+                    size={35}
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 text-yellow-500 opacity-60 cursor-pointer"
+                    onClick={goToNext}
+                />
+              </>
+          )}
         </div>
       </div>
   );
