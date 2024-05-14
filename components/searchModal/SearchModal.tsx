@@ -22,16 +22,15 @@ const SearchModal = ({ isOpen, onClose }) => {
             </div>
             <div>
                 <Dock className={"my-4"}>
-                    <DockIcon size={40} className={"bg-white"} />
-                    <DockIcon size={40} className={"bg-black border border-white"} />
-                    <DockIcon size={40} className={"bg-blue-500"} />
-                    <DockIcon size={40} className={"bg-red-700"} />
-                    <DockIcon size={40} className={"bg-red-800"} />
-                    <DockIcon size={40} className={"bg-pink-600"} />
-                    <DockIcon size={40} className={"bg-yellow-300"} />
-                    <DockIcon size={40} className={"bg-green-400"} />
-                    <DockIcon size={40} className={"bg-indigo-700"} />
-                    <DockIcon size={40} className={"bg-orange-400"} />
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(255,255,255,1) 0%, rgba(0,0,0,1) 69%)`, border: '2px solid white'}}/>
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(7,129,250,1) 0%, rgba(3,45,87,1) 72%)`}}/>
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(227,6,19,1) 0%, rgba(69,2,7,1) 86%)`}}/>
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(215,65,39,1) 0%, rgba(56,17,10,1) 86%)`}}/>
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(227,58,102,1) 0%, rgba(69,18,31,1) 86%)`}}/>
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(255,199,44,1) 0%, rgba(97,75,16,1) 86%)`}}/>
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(0,235,121,1) 0%, rgba(0,71,37,1) 86%)`}}/>
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(160,74,240,1) 0%, rgba(51,24,77,1) 86%)`}}/>
+                    <DockIcon size={40} style={{background: `linear-gradient(120deg, rgba(217,135,80,1) 0%, rgba(54,33,20,1) 86%)`}}/>
                 </Dock>
             </div>
         </div>

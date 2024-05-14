@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import {motion, MotionStyle, useMotionValue, useSpring, useTransform} from "framer-motion";
 import React, { PropsWithChildren, useRef } from "react";
 
 export interface DockProps extends VariantProps<typeof dockVariants> {
@@ -65,6 +65,7 @@ export interface DockIconProps {
     className?: string;
     children?: React.ReactNode;
     props?: PropsWithChildren;
+    style?: MotionStyle;
 }
 
 const DockIcon = ({
@@ -74,6 +75,7 @@ const DockIcon = ({
                       mouseX,
                       className,
                       children,
+                      style,
                       ...props
                   }: DockIconProps) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -99,7 +101,7 @@ const DockIcon = ({
     return (
         <motion.div
             ref={ref}
-            style={{ width }}
+            style={{ width, ...style }}
             className={cn(
                 "flex aspect-square cursor-pointer items-center justify-center rounded-full bg-neutral-400/40",
                 className,
