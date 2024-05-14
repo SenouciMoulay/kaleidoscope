@@ -14,7 +14,7 @@ export default function MovieComponent({ movie, preferredFrame, colors, classNam
 
     return (
         // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
-        <div className={`relative group block cursor-pointer ${className} rounded-sm m-1 `} onClick={onClick}>
+        <div className={`relative group block cursor-pointer ${className} rounded-sm m-1.5 `} onClick={onClick}>
             <Image
                 src={preferredFrame.image}
                 alt={movie.title}
