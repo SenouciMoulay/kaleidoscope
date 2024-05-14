@@ -146,7 +146,7 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
                                 }
                             }}
                         >
-                            {isMusicPlaying ? <Volume2 /> : <VolumeX />}
+                            {isMusicPlaying ? <Volume2 className={"text-yellow-500"}/> : <VolumeX className={"text-yellow-500"}/>}
                         </button>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-2">
                             {movies.map((movie) => {
@@ -165,8 +165,7 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
                         </div>
                         <MoviePopable movie={selectedMovie ?? undefined} close={() => setSelectedMovie(null)} />
 
-                        <Search className="fixed top-4 right-4 z-20 text-white-500 hover:text-gray-700 font-bold cursor-pointer"
-                            size={40}
+                        <Search className="fixed top-4 right-4 z-20 text-yellow-500 font-bold cursor-pointer"
                             onClick={() => setSearchModalOpen(true)} />
 
 
