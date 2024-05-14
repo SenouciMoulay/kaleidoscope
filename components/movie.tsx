@@ -1,9 +1,20 @@
 import { Frame, Movie, Color } from "@prisma/client";
 import Image from "next/image";
-import {CreationColor} from "@/pages/api/movies";
+import { CreationColor } from "@/pages/api/movies";
 
 interface MovieProps {
-    movie: Movie,
+    movie: {
+        title: string
+        year: number
+        directors: Array<{
+            firstName: string
+            lastName: string
+        }>
+        colors: Array<{
+            name: string;
+            value: string;
+        }>;
+    },
     preferredFrame: Frame
     colors: Color
     className?: string
@@ -12,6 +23,7 @@ interface MovieProps {
 
 export default function MovieComponent({ movie, preferredFrame, colors, className, onClick }: MovieProps) {
 
+    const color = movie.colors?.[0];
     return (
         // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
         <div className={`relative group block cursor-pointer ${className} rounded-sm m-1.5 `} onClick={onClick}>
@@ -22,10 +34,17 @@ export default function MovieComponent({ movie, preferredFrame, colors, classNam
                 objectFit="cover"
                 className="absolute inset-0 object-cover w-full h-full rounded-md"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-60 w-full h-full rounded-md opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100 flex justify-start items-end p-4">
+            <div className="absolute inset-0 bg-opacity-60 w-full h-full rounded-md opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100 flex justify-start items-end p-4"
+                style={{ background: `linear-gradient(0deg, ${color?.value}B0 0%, rgba(0, 0, 0, 0) 100%)` }}>
                 <div className={"flex flex-col"}>
                     <p className="text-white text-2xl font-bold mb-2 ml-2">{movie.title}</p>
-                    <p className="text-white text-xl font-bold mb-2 ml-2">{movie.year}</p>
+                    <div className="flex flex-row">
+                        <div className="text-white text-sm ml-2 font-bold">
+                            {movie.directors.map(director => `${director.firstName} ${director.lastName}`).join(" - ")}
+                        </div>
+                        <div className='w-[40px] h-[40px] flex justify-center items-center ml-2 rounded-full'>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
