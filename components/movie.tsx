@@ -23,7 +23,7 @@ interface MovieProps {
 
 export default function MovieComponent({ movie, preferredFrame, colors, className, onClick }: MovieProps) {
 
-    const color = movie.colors?.[0];
+    const color = movie.colors?.[0] ?? { value: "#000000", name: "Black" }
     return (
         // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
         <div className={`relative group block cursor-pointer ${className} rounded-sm m-1.5 `} onClick={onClick}>
@@ -35,7 +35,8 @@ export default function MovieComponent({ movie, preferredFrame, colors, classNam
                 className="absolute inset-0 object-cover w-full h-full rounded-md"
             />
             <div className="absolute inset-0 bg-opacity-60 w-full h-full rounded-md opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100 flex justify-start items-end p-4"
-                style={{ background: `linear-gradient(0deg, ${color?.value}B0 0%, rgba(0, 0, 0, 0) 100%)` }}>
+                style={{ background: `${color?.value}70` }}>
+
                 <div className={"flex flex-col"}>
                     <p className="text-white text-2xl font-bold mb-2 ml-2">{movie.title}</p>
                     <div className="flex flex-row">

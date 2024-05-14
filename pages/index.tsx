@@ -106,6 +106,9 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
         playVideo();
     };
 
+    const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
+    const [searchTerms, setSearchTerms] = useState<string | undefined>(undefined);
+
     return (
         <main className="relative w-full h-full flex flex-col">
             <Audio ref={audio} className="hidden" id="backgroundMusic" autoPlay loop src="/assets/claudio.mp3" type="audio/mp3" />
@@ -170,6 +173,11 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
                         <SearchModal
                             isOpen={isSearchModalOpen}
                             onClose={() => setSearchModalOpen(false)}
+                            selectedColor={selectedColor}
+                            onSelectColor={setSelectedColor}
+                            searchTerms={searchTerms}
+                            onSearch={(value) => setSearchTerms(value)}
+
                         />
                     </>
                 )}
