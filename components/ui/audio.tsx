@@ -1,5 +1,5 @@
 import React from "react";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface AudioProps {
     src: string
@@ -14,29 +14,18 @@ interface AudioProps {
 }
 
 const Audio = React.forwardRef<HTMLAudioElement, AudioProps>(({
-                                                                  src,
-                                                                  type,
-                                                                  size,
-                                                                  autoPlay,
-                                                                  muted,
-                                                                  loop,
-                                                                  controls, className,id
-                                                              }, ref) => {
+    src,
+    type,
+    size,
+    autoPlay,
+    muted,
+    loop,
+    controls, className, id
+}, ref) => {
 
     const audio = React.useRef<HTMLAudioElement>(null)
 
     React.useImperativeHandle(ref, () => audio.current as HTMLAudioElement)
-
-    React.useEffect(() => {
-        if (!autoPlay) return
-        if (audio.current && audio.current.readyState >= 2 && audio.current.paused) {
-            window.addEventListener("mousemove", () => {
-                audio.current?.play()
-                window?.removeEventListener("mousemove", () => { })
-            })
-        }
-    }, [autoPlay])
-
 
     return (
         <div

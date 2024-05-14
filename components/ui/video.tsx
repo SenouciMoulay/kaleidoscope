@@ -1,5 +1,5 @@
 import React from "react";
-import {cn} from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 interface VideoProps {
     src: string
@@ -13,28 +13,19 @@ interface VideoProps {
 }
 
 const Video = React.forwardRef<HTMLVideoElement, VideoProps>(({
-                                                                  src,
-                                                                  type,
-                                                                  size,
-                                                                  autoPlay,
-                                                                  muted,
-                                                                  loop,
-                                                                  controls, className
-                                                              }, ref) => {
+    src,
+    type,
+    size,
+    autoPlay,
+    muted,
+    loop,
+    controls, className
+}, ref) => {
 
     const video = React.useRef<HTMLVideoElement>(null)
 
     React.useImperativeHandle(ref, () => video.current as HTMLVideoElement)
 
-    React.useEffect(() => {
-        if (!autoPlay) return
-        if (video.current && video.current.readyState >= 2 && video.current.paused) {
-            window.addEventListener("mousemove", () => {
-                video.current?.play()
-                window?.removeEventListener("mousemove", () => { })
-            })
-        }
-    }, [autoPlay])
 
 
     return (

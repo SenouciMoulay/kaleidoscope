@@ -36,7 +36,7 @@ export function DropZone(
                 onChange(files);
               }}
             />
-            <p className="text-sm text-gray-500 dark:text-gray-400">The selected image will be displayed above.</p>
+            <p className="text-sm text-gray-500 text-gray-400">The selected image will be displayed above.</p>
           </div>
           <Button size="lg">Upload Image</Button>
         </CardContent>
