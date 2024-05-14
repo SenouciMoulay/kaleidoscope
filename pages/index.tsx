@@ -108,6 +108,27 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
 
     const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
     const [searchTerms, setSearchTerms] = useState<string | undefined>(undefined);
+    const [filteredMovies, setFilteredMovies] = useState(movies);
+
+    function search() {
+        function titleSearch(movie: typeof movies[0]) {
+            if (!searchTerms?.length) return true;
+            return movie.title.toLowerCase().includes(searchTerms.toLowerCase());
+        }
+
+        function directorSearch(movie: typeof movies[0]) {
+            if (!searchTerms?.length) return true;
+            return movie.directors.map(director => `${director.firstName} ${director.lastName}`).join(" ").toLowerCase().includes(searchTerms.toLowerCase());
+        }
+
+        function colorSearch(movie: typeof movies[0]) {
+            if (!selectedColor) return true;
+            return movie.colors.map(color => color.value).includes(selectedColor);
+        }
+
+        const filtered = movies.filter(movie => (titleSearch(movie) || directorSearch(movie)) && colorSearch(movie));
+        setFilteredMovies(filtered);
+    }
 
     return (
         <main className="relative w-full h-full flex flex-col">
@@ -146,11 +167,10 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
                                 }
                             }}
                         >
-                            {isMusicPlaying ? <Volume2 className={"text-yellow-500"}/> : <VolumeX className={"text-yellow-500"}/>}
+                            {isMusicPlaying ? <Volume2 className={"text-yellow-500"} /> : <VolumeX className={"text-yellow-500"} />}
                         </button>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-2">
-                            {movies.map((movie) => {
-                                console.log(movie)
+                            {filteredMovies.map((movie) => {
 
                                 return <MovieComponent
                                     className="aspect-video"
@@ -171,11 +191,20 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
 
                         <SearchModal
                             isOpen={isSearchModalOpen}
-                            onClose={() => setSearchModalOpen(false)}
+                            onClose={() => {
+                                setSearchModalOpen(false)
+                                setTimeout(() => {
+                                    search()
+                                }, 400)
+                            }}
                             selectedColor={selectedColor}
-                            onSelectColor={setSelectedColor}
+                            onSelectColor={(color) => {
+                                setSelectedColor(color)
+                            }}
                             searchTerms={searchTerms}
-                            onSearch={(value) => setSearchTerms(value)}
+                            onSearch={(value) => {
+                                setSearchTerms(value)
+                            }}
 
                         />
                     </>

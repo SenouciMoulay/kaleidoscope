@@ -73,6 +73,7 @@ const SearchModal = (
         if (searchRef.current) {
             onSearch?.(searchRef.current.value);
         }
+        onClose();
     }
 
     function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -88,6 +89,20 @@ const SearchModal = (
         else {
             onSelectColor?.(color);
         }
+    }
+
+    // on open focus on search input
+    if (isOpen) {
+        // set the value of the search input to the search terms
+        setTimeout(() => {
+            if (!searchRef.current) return;
+            searchRef.current!.focus();
+            if (!searchRef.current.value?.length) {
+                searchRef.current.value = searchTerms ?? '';
+            }
+
+        }, 0);
+
     }
 
 
@@ -127,7 +142,6 @@ const SearchModal = (
                             ref={searchRef}
                             onKeyDown={handleKeyDown}
                             aria-label="Rechercher"
-                            value={searchTerms}
                         />
                         <ArrowRight size={40} className={"text-yellow-500"} />
                     </motion.div>
