@@ -4,7 +4,7 @@ export default function RootLayout() {
   return (
     <Html>
       <Head />
-      <body className="min-h-screen">
+      <body className="bg-black text-white min-h-screen">
         <Main />
         <NextScript />
       </body>
