@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 
 export const dynamic = "force-dynamic";
 
-const skipWelcome = true;
+const skipWelcome = false;
 
 // Récupérer tous les films depuis la base de données (Prisma)
 export async function getStaticProps() {
@@ -105,12 +105,15 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
         playMusic();
         playVideo();
     };
-
-    const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
-    const [searchTerms, setSearchTerms] = useState<string | undefined>(undefined);
     const [filteredMovies, setFilteredMovies] = useState(movies);
 
-    function search() {
+    function search({
+        text: searchTerms,
+        color: selectedColor
+    }: {
+        text: string | undefined,
+        color: string | undefined
+    }) {
         function titleSearch(movie: typeof movies[0]) {
             if (!searchTerms?.length) return true;
             return movie.title.toLowerCase().includes(searchTerms.toLowerCase());
@@ -170,6 +173,16 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
                             {isMusicPlaying ? <Volume2 className={"text-yellow-500"} /> : <VolumeX className={"text-yellow-500"} />}
                         </button>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-2">
+                            {
+                                filteredMovies.length === 0 && <div className="text-white h-screen w-screen
+                                 flex items-center justify-center">
+                                    <div className="text-center">
+                                        <p className="text-4xl font-bold">Aucun film trouvé</p>
+                                        <p className="text-xl">Essayez de rechercher un autre film</p>
+                                    </div>
+                                </div>
+
+                            }
                             {filteredMovies.map((movie) => {
 
                                 return <MovieComponent
@@ -191,19 +204,12 @@ export default function Home({ movies }: InferGetStaticPropsType<typeof getStati
 
                         <SearchModal
                             isOpen={isSearchModalOpen}
-                            onClose={() => {
+                            onClose={(args) => {
+                                if (args) {
+                                    search(args)
+                                }
                                 setSearchModalOpen(false)
-                                setTimeout(() => {
-                                    search()
-                                }, 400)
-                            }}
-                            selectedColor={selectedColor}
-                            onSelectColor={(color) => {
-                                setSelectedColor(color)
-                            }}
-                            searchTerms={searchTerms}
-                            onSearch={(value) => {
-                                setSearchTerms(value)
+
                             }}
 
                         />

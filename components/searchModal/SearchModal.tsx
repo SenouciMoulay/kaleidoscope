@@ -49,45 +49,43 @@ const colorsItems = [
 
 interface SearchModalProps {
     isOpen: boolean;
-    onClose: () => void;
-    selectedColor?: string;
-    onSelectColor?: (color: string | undefined) => void;
-    searchTerms?: string;
-    onSearch?: (searchTerms: string) => void;
+    onClose: (args?: { text: string | undefined, color: string | undefined }) => void;
 }
 
 const SearchModal = (
     {
         isOpen,
         onClose,
-        selectedColor,
-        onSelectColor,
-        searchTerms,
-        onSearch,
     }: SearchModalProps
 ) => {
 
     const searchRef = useRef<HTMLInputElement>(null);
 
+    const [searchValue, setSearchValue] = useState<string | undefined>();
+    const [selectedColor, setSelectedColor] = useState<string | undefined>();
+
+
     function search() {
-        if (searchRef.current) {
-            onSearch?.(searchRef.current.value);
-        }
-        onClose();
+        onClose({
+            text: searchValue,
+            color: selectedColor
+        });
     }
+
 
     function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === 'Enter') {
+            searchRef.current?.blur();
             search();
         }
     }
 
     function handleColorSelect(color: string) {
         if (selectedColor === color) {
-            onSelectColor?.(undefined);
+            setSelectedColor(undefined);
         }
         else {
-            onSelectColor?.(color);
+            setSelectedColor(color);
         }
     }
 
@@ -97,10 +95,6 @@ const SearchModal = (
         setTimeout(() => {
             if (!searchRef.current) return;
             searchRef.current!.focus();
-            if (!searchRef.current.value?.length) {
-                searchRef.current.value = searchTerms ?? '';
-            }
-
         }, 0);
 
     }
@@ -117,10 +111,10 @@ const SearchModal = (
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    onClick={onClose}
+                    onClick={search}
                 >
                     <motion.button
-                        onClick={onClose}
+                        onClick={() => onClose()}
                         className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 font-bold"
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -142,6 +136,8 @@ const SearchModal = (
                             ref={searchRef}
                             onKeyDown={handleKeyDown}
                             aria-label="Rechercher"
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
                         />
                         <ArrowRight size={40} className={"text-yellow-500"} />
                     </motion.div>
