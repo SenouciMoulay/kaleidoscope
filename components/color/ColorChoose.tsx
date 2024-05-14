@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Color } from "./Color";
 const colors = [
-  "#00b572",
-  "#ffa901",
-  "#8b47b0",
-  "#fcff00",
-  "#ff3526",
-  "#2e89d8",
-  "#F0F0F0",
+  "#FFFFFF",
+  "#0781FA",
+  "#E30613",
+  "#D74127",
+  "#E33A66",
+  "#FFC72C",
+  "#00EB79",
+  "#A04AF0",
+  "#D98750",
 ];
 
 // extends input string
@@ -29,7 +31,7 @@ export function ColorChoose({
   return (
     <div
       className="flex flex-row flex-wrap gap-2
-    relative w-full h-12 overflow-hidden rounded-md border border-gray-300"
+    relative w-full h-12 overflow-hidden rounded-md"
     >
       {disabled && (
         <div className="absolute w-full h-full bg-gray-100 opacity-50 z-10" />

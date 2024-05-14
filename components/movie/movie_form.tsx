@@ -6,6 +6,9 @@ import { ColorChoose } from "../color/ColorChoose";
 import { DropZone } from "../component/drop-zone";
 import { PutBlobResult } from "@vercel/blob";
 import { v4 as uuidv4 } from "uuid";
+import { Input } from "@/components/ui/input";
+import { Movie } from "@prisma/client";
+import { MovieWithRelations } from "@/pages/admin/movies";
 
 const movieSchema = z.object({
   title: z.string(),
@@ -19,12 +22,27 @@ const movieSchema = z.object({
 export type MovieFormValues = z.infer<typeof movieSchema>;
 
 interface MovieFormProps {
-  defaultValues?: MovieFormValues;
+  movieSelected?: MovieWithRelations;
   onSubmit?: (data: MovieFormValues) => Promise<void>;
 }
 
-export function MovieForm({ defaultValues, onSubmit }: MovieFormProps) {
+export function MovieForm({ movieSelected, onSubmit }: MovieFormProps) {
   onSubmit = onSubmit ?? (async (data) => console.log(data));
+
+  const defaultValues: MovieFormValues = {
+    title: movieSelected?.title ?? "",
+    year: movieSelected?.year ?? 2021,
+    directors:
+      movieSelected?.directors.map(
+        (director) => director.firstName + " " + director.lastName
+      ) ?? [],
+    actors:
+      movieSelected?.actors.map(
+        (actor) => actor.firstName + " " + actor.lastName
+      ) ?? [],
+    frames: movieSelected?.frames.map((frame) => frame.image) ?? [],
+    colors: movieSelected?.colors.map((color) => color.name) ?? [],
+  };
 
   const {
     control,
@@ -110,7 +128,6 @@ export function MovieForm({ defaultValues, onSubmit }: MovieFormProps) {
               id="title"
               type="text"
               {...register("title")}
-              className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
             {errors.title && (
@@ -123,7 +140,6 @@ export function MovieForm({ defaultValues, onSubmit }: MovieFormProps) {
               id="year"
               type="number"
               {...register("year", { valueAsNumber: true })}
-              className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
             {errors.year && (
@@ -136,9 +152,14 @@ export function MovieForm({ defaultValues, onSubmit }: MovieFormProps) {
               id="directors"
               type="text"
               {...register("directors", {
-                setValueAs: (value) => value.split(","),
+                setValueAs: (value) => {
+                  console.log(value);
+                  return value.map(
+                    (director: any) =>
+                      director.firstName + " " + director.lastName
+                  );
+                },
               })}
-              className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
             {errors.directors && (
@@ -151,9 +172,13 @@ export function MovieForm({ defaultValues, onSubmit }: MovieFormProps) {
               id="actors"
               type="text"
               {...register("actors", {
-                setValueAs: (value) => value.split(","),
+                setValueAs: (value) => {
+                  console.log(value);
+                  return value.map(
+                    (actor: any) => actor.firstName + " " + actor.lastName
+                  );
+                },
               })}
-              className="border border-gray-300 rounded-md text-slate-950"
               disabled={loading}
             />
             {errors.actors && (

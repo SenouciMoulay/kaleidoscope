@@ -19,7 +19,7 @@ export function Color({ color, onChange, selected }: ColorProps) {
       onClick={() => onChange?.(!selected)}
       style={{ backgroundColor: color }}
     >
-      {color === "#F0F0F0" && (
+      {color === "#FFFFFF" && (
         <>
           <div
             className="w-4 h-8 rounded-l-full"
@@ -34,7 +34,7 @@ export function Color({ color, onChange, selected }: ColorProps) {
       {selected && (
         <div className="w-8 h-8 rounded-full flex items-center justify-center absolute">
           <div className="w-4 h-4 rounded-full flex flex-row relative bg-white">
-            {color === "#F0F0F0" && (
+            {color === "#FFFFFF" && (
               <>
                 <div
                   className="w-4 h-4 rounded-l-full"
