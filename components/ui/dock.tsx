@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, MotionStyle, useMotionValue, useSpring, useTransform } from "framer-motion";
 import React, { PropsWithChildren, useRef } from "react";
 
 export interface DockProps extends VariantProps<typeof dockVariants> {
@@ -65,17 +65,21 @@ export interface DockIconProps {
     className?: string;
     children?: React.ReactNode;
     props?: PropsWithChildren;
+    style?: MotionStyle;
+    onClick?: () => void;
 }
 
 const DockIcon = ({
-                      size,
-                      magnification = DEFAULT_MAGNIFICATION,
-                      distance = DEFAULT_DISTANCE,
-                      mouseX,
-                      className,
-                      children,
-                      ...props
-                  }: DockIconProps) => {
+    size,
+    magnification = DEFAULT_MAGNIFICATION,
+    distance = DEFAULT_DISTANCE,
+    mouseX,
+    className,
+    children,
+    style,
+    onClick,
+    ...props
+}: DockIconProps) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const distanceCalc = useTransform(mouseX, (val: number) => {
@@ -87,7 +91,7 @@ const DockIcon = ({
     let widthSync = useTransform(
         distanceCalc,
         [-distance, 0, distance],
-        [40, magnification, 40],
+        [size, magnification, size],
     );
 
     let width = useSpring(widthSync, {
@@ -99,7 +103,8 @@ const DockIcon = ({
     return (
         <motion.div
             ref={ref}
-            style={{ width }}
+            style={{ width, ...style }}
+            onClick={onClick}
             className={cn(
                 "flex aspect-square cursor-pointer items-center justify-center rounded-full bg-neutral-400/40",
                 className,

@@ -10,7 +10,7 @@ import {
 
 import React from "react";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }) {
   return (
     <ClerkProvider {...pageProps}>
       <div className="bg-black">
