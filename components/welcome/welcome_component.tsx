@@ -9,6 +9,14 @@ const WelcomeComponent: React.FC<{ onDiscoverClick: () => void }> = ({ onDiscove
     const [isScrollable, setIsScrollable] = useState(false);
     const [imDumb, setImDumb] = useState(false);
 
+    const isMobile = () => {
+        if (typeof window !== "undefined") {
+            const aspectRatio = window.innerWidth / window.innerHeight;
+            return aspectRatio < 1;
+        }
+        return false;
+    }
+
     useEffect(() => {
         // after 3 seconds, show the button
         const timeout = setTimeout(() => {
@@ -71,7 +79,10 @@ const WelcomeComponent: React.FC<{ onDiscoverClick: () => void }> = ({ onDiscove
                 }
             }}
         >
-            <div className="flex flex-col items-center justify-center w-10/12 h-full">
+            <div className="flex flex-col items-center justify-center w-10/12 h-full" style={{
+                // if mobile, make the text smaller
+                zoom: isMobile() ? 0.5 : 1
+            }}>
                 <TextGenerateEffect
                     className="text-yellow-500"
                     words="Vous vous apprêtez à vivre une expérience visuelle et auditive."

@@ -26,6 +26,8 @@ export function FlareCursor() {
         target.classList.contains("cursor-none") ||
         target.parentElement?.classList.contains("cursor-none")
       );
+
+
       // hide the default cursor
       target.style.cursor = "none";
 
@@ -43,6 +45,7 @@ export function FlareCursor() {
   // Adjust the cursor position to create a visual effect when over a clickable element.
   const cursorStyle = isPointer ? { left: "-100px", top: "-100px" } : {};
 
+
   // Render the custom cursor element with dynamic styles based on cursor state.
   return (
     <div
@@ -53,6 +56,7 @@ export function FlareCursor() {
         top: `${position.y}px`,
         width: `${flareSize}px`,
         height: `${flareSize}px`,
+        display: hideCursor ? "hidden" : "visible",
       }}
     />
   );

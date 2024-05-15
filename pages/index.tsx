@@ -92,6 +92,14 @@ export default function Home({
     const video = React.useRef<HTMLVideoElement>(null);
     const [isSearchModalOpen, setSearchModalOpen] = useState(false);
 
+    const isMobile = () => {
+        if (typeof window !== "undefined") {
+            const aspectRatio = window.innerWidth / window.innerHeight;
+            return aspectRatio < 1;
+        }
+        return false;
+    }
+
     // set title of the page
     React.useEffect(() => {
         document.title = "Kaléidoscope";

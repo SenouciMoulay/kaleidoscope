@@ -46,7 +46,8 @@ export default function MovieComponent({
         style={{ background: `${color?.value}70` }}
       >
         <div className={"flex flex-col"}>
-          <p className="text-white text-2xl font-bold mb-2 ml-2">
+          {/* text shadow */}
+          <p className="text-white text-2xl font-bold mb-2 ml-2 drop-shadow-sm">
             {movie.title}
           </p>
           <div className="flex flex-row">
