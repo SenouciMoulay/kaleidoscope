@@ -277,6 +277,22 @@ export default function Home({
                         close={() => setSelectedMovie(undefined)}
                     />
 
+                    {/* social info after the list */}
+                    <div className="w-full h-20 bg-black bg-opacity-80 flex items-center justify-center">
+                        {/* instagram */}
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 bg-yellow-500 border-yellow-500 hover:border-yellow-600 cursor-pointer">
+                            <a href="https://www.instagram.com/kaleidoscope_ynov/" target="_blank" rel="noreferrer">
+                                <Image
+                                    src="/assets/instagram.svg"
+                                    alt="instagram"
+                                    width={20}
+                                    height={20}
+                                />
+                            </a>
+                        </div>
+                    </div>
+
+
                 </motion.div>
             )
             }
