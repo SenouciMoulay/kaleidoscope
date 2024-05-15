@@ -84,7 +84,7 @@ const WelcomeComponent: React.FC<{ onDiscoverClick: () => void }> = ({ onDiscove
                 zoom: isMobile() ? 0.5 : 1
             }}>
                 <TextGenerateEffect
-                    className="text-yellow-500"
+                    className="text-yellow-500 pl-20"
                     words="Vous vous apprêtez à vivre une expérience visuelle et auditive."
                     ref={animationRef}
                 />
