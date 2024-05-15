@@ -1,55 +1,80 @@
 "use client";
-import { useEffect } from "react";
-import { motion, stagger, useAnimate } from "framer-motion";
+import React from "react";
+import { type AnimationPlaybackControls, motion, stagger, useAnimate } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export const TextGenerateEffect = ({
+export const TextGenerateEffect = React.forwardRef<
+  {
+    complete: () => void;
+    pause: () => void;
+  }, {
+    words: string;
+    className?: string;
+  }
+
+>(({
   words,
   className,
 }: {
   words: string;
   className?: string;
-}) => {
+}, ref) => {
   const [scope, animate] = useAnimate();
-  let wordsArray = words.split(" ");
-  useEffect(() => {
-    animate(
-      "span",
-      {
-        opacity: 1,
-      },
-      {
-        duration: 1,
-        delay: stagger(0.2),
-        ease: "easeInOut",
-      }
-    );
-  }, [scope.current]);
+  const wordsArray = words.split(" ");
+  const [controls, setControls] = React.useState<AnimationPlaybackControls | null>(null);
 
-  const renderWords = () => {
-    return (
+  // animate the words
+  // on render animate the words
+  // on stop stop the animation
+  // on end render the word without animation
+
+  React.useEffect(() => {
+    if (animate) {
+      setControls(
+        animate(
+          "span",
+          {
+            opacity: 1,
+          },
+          {
+            duration: 1,
+            delay: stagger(0.2),
+            ease: "easeInOut",
+          },
+        ),
+      );
+    }
+  }, [animate]);
+
+  //excutive handler
+  React.useImperativeHandle(ref, () => ({
+    complete: () => {
+      controls?.complete();
+    },
+    pause: () => {
+      controls?.pause();
+    },
+  }));
+
+
+  return (
+    <div className={cn("text-white font-bold text-7xl leading-snug tracking-wide", className)
+    }>
       <motion.div ref={scope}>
         {wordsArray.map((word, idx) => {
           return (
             <motion.span
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               key={word + idx}
-              className="text-white text-black opacity-0"
+              className="opacity-0"
             >
               {word}{" "}
             </motion.span>
           );
         })}
       </motion.div>
-    );
-  };
-
-  return (
-    <div className={cn("font-bold", className)}>
-      <div className="mt-4">
-        <div className="text-white text-black text-7xl leading-snug tracking-wide">
-          {renderWords()}
-        </div>
-      </div>
     </div>
   );
-};
+});
+
+TextGenerateEffect.displayName = "TextGenerateEffect";

@@ -1,6 +1,5 @@
-import { Frame, Movie, Color } from "@prisma/client";
+import { Frame } from "@prisma/client";
 import Image from "next/image";
-import { CreationColor } from "@/pages/api/movies";
 
 interface MovieProps {
   movie: {
@@ -16,7 +15,6 @@ interface MovieProps {
     }>;
   };
   preferredFrame: Frame;
-  colors: Color;
   className?: string;
   onClick: () => void;
 }
@@ -24,7 +22,6 @@ interface MovieProps {
 export default function MovieComponent({
   movie,
   preferredFrame,
-  colors,
   className,
   onClick,
 }: MovieProps) {

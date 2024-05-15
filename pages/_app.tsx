@@ -11,10 +11,16 @@ import {
 import React from "react";
 import { FlareCursor } from "@/components/effect/flare-cursor";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }) {
   return (
     <ClerkProvider {...pageProps}>
-      {/* <FlareCursor /> */}
+      <FlareCursor />
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
+      {/* <SignedOut>
+        <SignInButton />
+      </SignedOut> */}
       <div className="bg-black">
         <div className="flex flex-col items-center justify-center h-full w-full py-2 overflow-hidden m-0">
           <Component {...pageProps} />

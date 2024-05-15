@@ -1,34 +1,41 @@
 import React, { useState, useEffect } from "react";
 
-// This functional component represents a custom cursor with a flare effect.
 export function FlareCursor() {
-  // State to track the current cursor position (x, y coordinates).
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [lastEvent, setLastEvent] = useState(null);
 
-  // State to track whether the cursor is over a clickable element.
   const [isPointer, setIsPointer] = useState(false);
 
-  // Event handler for the mousemove event.
-  const handleMouseMove = (e: any) => {
-    // Update the cursor position based on the mouse coordinates.
-    setPosition({ x: e.clientX, y: e.clientY });
 
-    // Get the target element that the cursor is currently over.
-    const target = e.target;
-
-    // Check if the cursor is over a clickable element by inspecting the cursor style.
-    setIsPointer(
-      window.getComputedStyle(target).getPropertyValue("cursor") === "pointer"
-    );
-  };
-
-  // Set up an effect to add and remove the mousemove event listener.
   useEffect(() => {
+    const handleMouseMove = (event?: any) => {
+      if (event) {
+        setLastEvent(event);
+      }
+      const e = event ?? lastEvent;
+      if (!e) return;
+      setPosition({ x: e.clientX, y: e.clientY });
+
+      const target = e.target;
+
+      setIsPointer(
+        target.classList.contains("cursor-pointer") ||
+        target.parentElement?.classList.contains("cursor-pointer")
+      );
+      // hide the default cursor
+      target.style.cursor = "none";
+
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
+    const interval = setInterval(() => {
+      handleMouseMove();
+    }, 1000);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      clearInterval(interval);
     };
-  }, []); // The empty dependency array ensures that this effect runs only once on mount.
+  }, []);
 
   // Calculate the size of the flare based on whether the cursor is over a clickable element.
   const flareSize = isPointer ? 10 : 30;
@@ -47,6 +54,6 @@ export function FlareCursor() {
         width: `${flareSize}px`,
         height: `${flareSize}px`,
       }}
-    ></div>
+    />
   );
 }

@@ -20,73 +20,30 @@ interface MoviePopupProps {
 
 function MoviePopup({ movie, className, close }: MoviePopupProps) {
   const [frames, setFrames] = useState<Frame[]>(movie.frames);
-  const [index, setIndex] = useState(0);
-
-  // useEffect(() => {
-  //   fetch(`/api/movies/${movie.id}/frames`)
-  //     .then((res) => res.json())
-  //     .then(($frames) => setFrames($frames));
-  // }, [movie]);
-
-  // useEffect(() => {
-  //   function handleKeyDown(event: KeyboardEvent) {
-  //     switch (event.key) {
-  //       case "ArrowLeft":
-  //         goToPrevious();
-  //         break;
-  //       case "ArrowRight":
-  //         goToNext();
-  //         break;
-  //       case "Escape":
-  //         close?.();
-  //         break;
-  //     }
-  //   }
-
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, [index, frames, close]);
-
-  // function goToPrevious() {
-  //   if (index !== 0) {
-  //     setIndex(index - 1);
-  //     setLoading(true);
-  //   }
-  // }
-
-  // function goToNext() {
-  //   if (index < frames.length - 1) {
-  //     setIndex(index + 1);
-  //     setLoading(true);
-  //   }
-  // }
 
   return (
     <div
-      className={`flex justify-center items-center bg-black/90 fixed top-0 left-0 w-full h-full z-50 ${
-        className ?? ""
-      }`}
+      className={`flex justify-center items-center bg-black/90 fixed top-0 left-0 w-full h-full z-50 ${className ?? ""
+        }`}
+      onClick={close}
+      onKeyDown={(e) => e.key === "Escape" && close?.()}
     >
       <X
         size={30}
         className="absolute text-yellow-500 top-3.5 right-3.5 cursor-pointer z-50"
         onClick={close}
       />
-      <Carousel className="relative flex justify-center h-[85%] mx-auto w-4/5">
+      <Carousel className="relative flex justify-center h-[85%] mx-auto w-4/5" onClick={(e) => e.stopPropagation()}>
         <CarouselContent className="h-full w-full">
           {frames.map((frame) => (
-            <CarouselItem>
-              <div className="h-full w-full">
-                <Image
-                  src={frame.image}
-                  alt={movie.title}
-                  width={3840}
-                  height={2160}
-                  className="w-full h-full rounded-lg object-cover"
-                />
-              </div>
+            <CarouselItem key={frame.id} className="h-full w-full">
+              <Image
+                src={frame.image}
+                alt={movie.title}
+                width={3840}
+                height={2160}
+                className="w-full h-full rounded-lg object-cover"
+              />
             </CarouselItem>
           ))}
         </CarouselContent>
