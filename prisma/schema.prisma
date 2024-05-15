@@ -11,10 +11,75 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  image     String
+model Actor {
+  id        String  @id @default(uuid())
+  firstName String
+  lastName  String
+  movies    Movie[]
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([firstName, lastName])
+}
+
+model Director {
+  id        String  @id @default(uuid())
+  firstName String
+  lastName  String
+  movies    Movie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([firstName, lastName])
+}
+
+model Frame {
+  id           String @id @default(uuid())
+  movie        Movie  @relation(fields: [movieId], references: [id], name: "MovieToFrame")
+  movieId      String
+  preferredFor Movie? @relation(name: "MovieToPreferredFrame")
+  image        String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Color {
+  id     String  @id @default(uuid())
+  name   String
+  value  String
+  movies Movie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, value])
+}
+
+model Movie {
+  id               String     @id @default(uuid())
+  title            String
+  year             Int
+  actors           Actor[]
+  frames           Frame[]    @relation(name: "MovieToFrame")
+  preferredFrame   Frame?     @relation(name: "MovieToPreferredFrame", fields: [preferredFrameId], references: [id])
+  preferredFrameId String?    @unique
+  colors           Color[]
+  directors        Director[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([title, year])
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
