@@ -1,107 +1,109 @@
-import { Frame, Movie } from "@prisma/client";
+import { Frame, Movie, Prisma } from "@prisma/client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, X } from "lucide-react";
+import Autoscroll from "embla-carousel-react";
+import { MoveLeft, MoveRight, X } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
+import { TMovieIndex } from "@/pages";
 
 interface MoviePopupProps {
-  movie: Movie;
+  movie: TMovieIndex;
   className?: string;
   close?: () => void;
 }
 
 function MoviePopup({ movie, className, close }: MoviePopupProps) {
-  const [frames, setFrames] = useState<Frame[]>([]);
+  const [frames, setFrames] = useState<Frame[]>(movie.frames);
   const [index, setIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(`/api/movies/${movie.id}/frames`)
-        .then((res) => res.json())
-        .then(($frames) => setFrames($frames));
-  }, [movie]);
+  // useEffect(() => {
+  //   fetch(`/api/movies/${movie.id}/frames`)
+  //     .then((res) => res.json())
+  //     .then(($frames) => setFrames($frames));
+  // }, [movie]);
 
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      switch (event.key) {
-        case "ArrowLeft":
-          goToPrevious();
-          break;
-        case "ArrowRight":
-          goToNext();
-          break;
-        case "Escape":
-          close?.();
-          break;
-      }
-    }
+  // useEffect(() => {
+  //   function handleKeyDown(event: KeyboardEvent) {
+  //     switch (event.key) {
+  //       case "ArrowLeft":
+  //         goToPrevious();
+  //         break;
+  //       case "ArrowRight":
+  //         goToNext();
+  //         break;
+  //       case "Escape":
+  //         close?.();
+  //         break;
+  //     }
+  //   }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [index, frames, close]);
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   return () => {
+  //     window.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, [index, frames, close]);
 
-  function goToPrevious() {
-    if (index !== 0) {
-      setIndex(index - 1);
-      setLoading(true);
-    }
-  }
+  // function goToPrevious() {
+  //   if (index !== 0) {
+  //     setIndex(index - 1);
+  //     setLoading(true);
+  //   }
+  // }
 
-  function goToNext() {
-    if (index < frames.length - 1) {
-      setIndex(index + 1);
-      setLoading(true);
-    }
-  }
+  // function goToNext() {
+  //   if (index < frames.length - 1) {
+  //     setIndex(index + 1);
+  //     setLoading(true);
+  //   }
+  // }
 
   return (
-      <div
-          className={`flex justify-center items-center bg-black/80 fixed top-0 left-0 w-full h-full z-50 ${className ?? ''}`}
-      >
-        <X
-            size={30}
-            className="absolute text-yellow-500 top-3.5 right-3.5 cursor-pointer"
-            onClick={close}
-        />
-        <div className="relative w-[1000px] h-[600px]">
-          {loading && (
-              <div className="absolute inset-0 w-full h-full bg-gray-600 opacity-20 animate-pulse rounded-lg"></div>
-          )}
-          {frames[index] && (
-              <Image
-                  src={frames[index].image}
+    <div
+      className={`flex justify-center items-center bg-black/90 fixed top-0 left-0 w-full h-full z-50 ${
+        className ?? ""
+      }`}
+    >
+      <X
+        size={30}
+        className="absolute text-yellow-500 top-3.5 right-3.5 cursor-pointer z-50"
+        onClick={close}
+      />
+      <Carousel className="relative flex justify-center h-[85%] mx-auto w-4/5">
+        <CarouselContent className="h-full w-full">
+          {frames.map((frame) => (
+            <CarouselItem>
+              <div className="h-full w-full">
+                <Image
+                  src={frame.image}
                   alt={movie.title}
-                  layout="fill"
-                  objectFit="cover"
-                  className="absolute inset-0 w-full h-full rounded-lg select-none pointer-events-none"
-                  onLoadingComplete={() => setLoading(false)}
-              />
-          )}
-          {!loading && (
-              <>
-                <ArrowLeft
-                    size={35}
-                    className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 text-yellow-500 opacity-60 cursor-pointer"
-                    onClick={goToPrevious}
+                  width={3840}
+                  height={2160}
+                  className="w-full h-full rounded-lg object-cover"
                 />
-                <ArrowRight
-                    size={35}
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 text-yellow-500 opacity-60 cursor-pointer"
-                    onClick={goToNext}
-                />
-              </>
-          )}
-        </div>
-      </div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </div>
   );
 }
 
 function MoviePopable({ movie, className, close }: Partial<MoviePopupProps>) {
   return (
-      <div>
-        {movie && <MoviePopup movie={movie} className={className} close={close} />}
-      </div>
+    <div>
+      {movie && (
+        <MoviePopup movie={movie} className={className} close={close} />
+      )}
+    </div>
   );
 }
 
