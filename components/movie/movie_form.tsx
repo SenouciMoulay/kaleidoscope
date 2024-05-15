@@ -49,17 +49,17 @@ export function MovieForm({ movieSelected }: MovieFormProps) {
               firstName: actor,
               lastName: "",
             };
-          } else if (actor.split(" ").length == 2) {
+          } if (actor.split(" ").length == 2) {
             return {
               firstName: actor.split(" ")[0],
               lastName: actor.split(" ")[1],
             };
-          } else {
-            return {
-              firstName: actor.split(" ")[0],
-              lastName: actor.split(" ").slice(1).join(" "),
-            };
           }
+          return {
+            firstName: actor.split(" ")[0],
+            lastName: actor.split(" ").slice(1).join(" "),
+          };
+
         }),
         directors: data.directors.map((director) => {
           if (director.split(" ").length == 1) {
@@ -67,17 +67,17 @@ export function MovieForm({ movieSelected }: MovieFormProps) {
               firstName: director,
               lastName: "",
             };
-          } else if (director.split(" ").length == 2) {
+          }
+          if (director.split(" ").length == 2) {
             return {
               firstName: director.split(" ")[0],
               lastName: director.split(" ")[1],
             };
-          } else {
-            return {
-              firstName: director.split(" ")[0],
-              lastName: director.split(" ").slice(1).join(" "),
-            };
           }
+          return {
+            firstName: director.split(" ")[0],
+            lastName: director.split(" ").slice(1).join(" "),
+          };
         }),
         frames: data.frames.map((frame, index) => {
           return {
@@ -114,11 +114,11 @@ export function MovieForm({ movieSelected }: MovieFormProps) {
     year: movieSelected?.year ?? 2021,
     directors:
       movieSelected?.directors.map(
-        (director) => director.firstName + " " + director.lastName
+        (director) => `${director.firstName} ${director.lastName}`
       ) ?? [],
     actors:
       movieSelected?.actors.map(
-        (actor) => actor.firstName + " " + actor.lastName
+        (actor) => `${actor.firstName} ${actor.lastName}`
       ) ?? [],
     frames: movieSelected?.frames.map((frame) => frame.image) ?? [],
     colors: movieSelected?.colors.map((color) => color.name) ?? [],

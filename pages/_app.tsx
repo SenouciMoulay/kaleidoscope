@@ -4,16 +4,12 @@ import type { AppProps } from "next/app";
 import "@/styles/globals.css";
 import {
   ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
 } from "@clerk/nextjs";
 
 import React from "react";
 import { FlareCursor } from "@/components/effect/flare-cursor";
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: AppProps) {
 
   // if user if on mobile
   const isMobile = () => {

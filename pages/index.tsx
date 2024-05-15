@@ -38,46 +38,16 @@ export async function getStaticProps() {
             directors: true,
             frames: true,
         },
-        orderBy : {
-            createdAt : "desc"
+        orderBy: {
+            createdAt: "desc"
         }
     });
     console.log(movies.length)
     // Si le nombre de films est inférieur à 10, ajouter des films fictifs
-    const movies10 =
-        movies.length < 100
-            ? [
-                ...movies,
-                ...Array(100 - movies.length)
-                    .fill(0)
-                    .map((_, i) => ({
-                        id: i,
-                        title: "Dummy Movie",
-                        directors: [
-                            {
-                                firstName: "Dummy",
-                                lastName: "Director",
-                            },
-                        ],
-                        preferredFrame: {
-                            image: `https://picsum.photos/1600/900?i=${i}`,
-                        },
-                        colors: [
-                            {
-                                name: "Dummy Color",
-                                // random hex (no opacity)
-                                value: `#${Math.floor(Math.random() * 16777215).toString(
-                                    16
-                                )}`,
-                            },
-                        ],
-                    })),
-            ]
-            : movies;
 
     return {
         props: {
-            movies: movies10,
+            movies: movies,
         },
         revalidate: 1,
     };
