@@ -2,25 +2,29 @@ import React, { useState, useEffect } from "react";
 
 export function FlareCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [lastEvent, setLastEvent] = useState(null);
 
   const [isPointer, setIsPointer] = useState(false);
 
+  const [hideCursor, setHideCursor] = useState(false);
+
 
   useEffect(() => {
-    const handleMouseMove = (event?: any) => {
-      if (event) {
-        setLastEvent(event);
-      }
-      const e = event ?? lastEvent;
+    const handleMouseMove = (e?: any) => {
+
       if (!e) return;
       setPosition({ x: e.clientX, y: e.clientY });
 
       const target = e.target;
 
+
       setIsPointer(
         target.classList.contains("cursor-pointer") ||
         target.parentElement?.classList.contains("cursor-pointer")
+      );
+
+      setHideCursor(
+        target.classList.contains("cursor-none") ||
+        target.parentElement?.classList.contains("cursor-none")
       );
       // hide the default cursor
       target.style.cursor = "none";
@@ -28,12 +32,8 @@ export function FlareCursor() {
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    const interval = setInterval(() => {
-      handleMouseMove();
-    }, 1000);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      clearInterval(interval);
     };
   }, []);
 
