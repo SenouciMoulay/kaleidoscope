@@ -39,7 +39,7 @@ import { ArrowRight, ArrowUpDown, Trash2Icon, TrashIcon } from "lucide-react";
 import { InferGetStaticPropsType } from "next";
 import { useState } from "react";
 
-export type MovieWithRelations = Prisma.MovieGetPayload<{
+export type TMovieAdmin = Prisma.MovieGetPayload<{
   include: {
     directors: true;
     actors: true;
@@ -51,7 +51,7 @@ export type MovieWithRelations = Prisma.MovieGetPayload<{
 // get the 1st page of movies
 export async function getStaticProps(): Promise<{
   props: {
-    movies: MovieWithRelations[];
+    movies: TMovieAdmin[];
   };
 }> {
   const prisma = new PrismaClient();
@@ -75,47 +75,43 @@ export async function getStaticProps(): Promise<{
 export default function Movies({
   movies,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const [selectedMovie, setSelectedMovie] = useState<
-    MovieWithRelations | undefined
-  >(undefined);
+  const [selectedMovie, setSelectedMovie] = useState<TMovieAdmin | undefined>(
+    undefined
+  );
+  const [tableMovies, setTableMovies] = useState<TMovieAdmin[]>(movies);
   const [openDialog, setOpenDialog] = useState(false);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [search, setSearch] = useState("");
 
-  const table = useReactTable({
-    columns: [
-      {
-        accessorKey: "title",
-        header: "Title",
-      },
-      {
-        accessorKey: "year",
-        header: "Year",
-      },
-      {
-        accessorKey: "directors",
-        header: "Directors",
-      },
-      {
-        accessorKey: "actors",
-        header: "Actors",
-      },
-      {
-        accessorKey: "colors",
-        header: "Colors",
-      },
-      {
-        accessorKey: "actions",
-        header: "",
-      },
-    ],
-    data: movies,
-    getCoreRowModel: getCoreRowModel<Movie>(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      columnFilters,
-    },
-  });
+  //   columns: [
+  //     {
+  //       accessorKey: "title",
+  //       header: "Title",
+  //     },
+  //     {
+  //       accessorKey: "year",
+  //       header: "Year",
+  //     },
+  //     {
+  //       accessorKey: "directors",
+  //       header: "Directors",
+  //     },
+  //     {
+  //       accessorKey: "actors",
+  //       header: "Actors",
+  //     },
+  //     {
+  //       accessorKey: "colors",
+  //       header: "Colors",
+  //     },
+  //     {
+  //       accessorKey: "actions",
+  //       header: "",
+  //     },
+  //   ],
+  //   data: movies,
+  //   getCoreRowModel: getCoreRowModel<Movie>(),
+  // });
+  const columns = ["Title", "Year", "Directors", "Actors", "Colors", ""];
 
   const editMovie = (id: string) => {
     setSelectedMovie(movies.find((movie) => movie.id === id));
@@ -128,11 +124,39 @@ export default function Movies({
       method: "DELETE",
     })
       .then(() => {
-        movies = movies.filter((movie) => movie.id !== id);
+        setTableMovies((prev) => prev.filter((movie) => movie.id !== id));
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+  };
+
+  const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+    setTableMovies(
+      movies.filter(
+        (movie) =>
+          movie.title
+            .toLowerCase()
+            .includes(event.target.value.toLowerCase()) ||
+          movie.directors
+            .map((director) => `${director.firstName} ${director.lastName}`)
+            .join(" ")
+            .toLowerCase()
+            .includes(event.target.value.toLowerCase()) ||
+          movie.actors
+            .map((actor) => `${actor.firstName} ${actor.lastName}`)
+            .join(" ")
+            .toLowerCase()
+            .includes(event.target.value.toLowerCase()) ||
+          movie.colors
+            .map((color) => color.name)
+            .join(" ")
+            .toLowerCase()
+            .includes(event.target.value.toLowerCase()) ||
+          movie.year.toString().includes(event.target.value.toLowerCase())
+      )
+    );
   };
 
   return (
@@ -142,10 +166,8 @@ export default function Movies({
         <div className="flex py-4">
           <Input
             placeholder="Rechercher..."
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("title")?.setFilterValue(event.target.value)
-            }
+            value={search}
+            onChange={(event) => onChangeSearch(event)}
             className="max-w-sm bg-transparent text-white"
           />
         </div>
@@ -161,25 +183,14 @@ export default function Movies({
       <div className="w-full">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
+            <TableRow>
+              {columns.map((column) => (
+                <TableHead key={column}>{column}</TableHead>
+              ))}
+            </TableRow>
           </TableHeader>
           <TableBody>
-            {movies.map((movie) => (
+            {tableMovies.map((movie) => (
               <TableRow key={movie.id}>
                 <TableCell>{movie.title}</TableCell>
                 <TableCell>{movie.year}</TableCell>
@@ -209,7 +220,7 @@ export default function Movies({
                                 style={{
                                   backgroundColor: color.name,
                                 }}
-                                className="-ml-1 w-6 h-6 rounded-full"
+                                className="-ml-2 w-8 h-8 rounded-full hover:scale-105 transform transition duration-300"
                               />
                             </TooltipTrigger>
                             <TooltipContent>{color.name}</TooltipContent>
@@ -221,10 +232,13 @@ export default function Movies({
                 </TableCell>
                 <TableCell align="right">
                   <Button variant="ghost" onClick={() => deleteMovie(movie.id)}>
-                    <Trash2Icon className="h-6 w-6" color="#FF0000" />
+                    <Trash2Icon
+                      className="h-6 w-6 hover:scale-110 transform transition duration-300"
+                      color="#FF0000"
+                    />
                   </Button>
                   <Button variant="ghost" onClick={() => editMovie(movie.id)}>
-                    <ArrowRight className="h-6 w-6" />
+                    <ArrowRight className="h-6 w-6 hover:scale-110 transform transition duration-300" />
                   </Button>
                 </TableCell>
               </TableRow>

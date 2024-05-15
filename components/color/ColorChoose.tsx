@@ -1,16 +1,6 @@
 import { useState } from "react";
 import { Color } from "./Color";
-const colors = [
-  "#FFFFFF",
-  "#0781FA",
-  "#E30613",
-  "#D74127",
-  "#E33A66",
-  "#FFC72C",
-  "#00EB79",
-  "#A04AF0",
-  "#D98750",
-];
+import { colors } from "../movie/movie_form";
 
 // extends input string
 interface ColorChooseProps {
@@ -38,14 +28,14 @@ export function ColorChoose({
       )}
       {colors.map((color) => (
         <Color
-          key={color}
-          color={color}
-          selected={selected.includes(color)}
+          key={color.hex}
+          color={color.hex}
+          selected={selected.includes(color.hex)}
           onChange={(select) => {
             if (select) {
-              setSelected((prev) => [...prev, color]);
+              setSelected((prev) => [...prev, color.hex]);
             } else {
-              setSelected((prev) => prev.filter((c) => c !== color));
+              setSelected((prev) => prev.filter((c) => c !== color.hex));
             }
             onChange?.(selected);
           }}

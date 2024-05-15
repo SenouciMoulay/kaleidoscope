@@ -2,13 +2,15 @@ import { MovieForm, MovieFormValues } from "@/components/movie/movie_form";
 import { CreationMovie } from "@/pages/api/movies";
 
 export const colors = [
-  { hex: "#00b572", name: "Green" },
-  { hex: "#ffa901", name: "Yellow" },
-  { hex: "#8b47b0", name: "Purple" },
-  { hex: "#fcff00", name: "Yellow" },
-  { hex: "#ff3526", name: "Red" },
-  { hex: "#2e89d8", name: "Blue" },
-  { hex: "#F0F0F0", name: "Black'n White" },
+  { name: "Black'n White", hex: "#FFFFFF" },
+  { name: "Blue", hex: "#0781FA" },
+  { name: "Red", hex: "#E30613" },
+  { name: "Dark Red", hex: "#D74127" },
+  { name: "Pink", hex: "#E33A66" },
+  { name: "Yellow", hex: "#FFC72C" },
+  { name: "Green", hex: "#00EB79" },
+  { name: "Purple", hex: "#A04AF0" },
+  { name: "Brown", hex: "#D98750" },
 ];
 
 export default function NewMovie() {

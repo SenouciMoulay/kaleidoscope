@@ -17,7 +17,7 @@ interface DropZoneProps {
 
 export function DropZone({ id, onChange, disabled }: DropZoneProps) {
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto flex items-center gap-3">
       <div className="grid w-full max-w-sm items-center gap-1.5">
         <Input
           multiple

@@ -5,10 +5,9 @@ import { z } from "zod";
 import { ColorChoose } from "../color/ColorChoose";
 import { DropZone } from "../component/drop-zone";
 import { PutBlobResult } from "@vercel/blob";
-import { v4 as uuidv4 } from "uuid";
-import { Input } from "@/components/ui/input";
-import { Movie } from "@prisma/client";
-import { MovieWithRelations } from "@/pages/admin/movies";
+import { TMovieAdmin } from "@/pages/admin/movies";
+import { CreationMovie } from "@/pages/api/movies";
+import { c } from "@vercel/blob/dist/put-96a1f07e";
 
 const movieSchema = z.object({
   title: z.string(),
@@ -22,13 +21,94 @@ const movieSchema = z.object({
 export type MovieFormValues = z.infer<typeof movieSchema>;
 
 interface MovieFormProps {
-  movieSelected?: MovieWithRelations;
-  onSubmit?: (data: MovieFormValues) => Promise<void>;
+  movieSelected?: TMovieAdmin;
 }
 
-export function MovieForm({ movieSelected, onSubmit }: MovieFormProps) {
-  onSubmit = onSubmit ?? (async (data) => console.log(data));
+export const colors = [
+  { name: "Black'n White", hex: "#FFFFFF" },
+  { name: "Blue", hex: "#0781FA" },
+  { name: "Red", hex: "#E30613" },
+  { name: "Dark Red", hex: "#D74127" },
+  { name: "Pink", hex: "#E33A66" },
+  { name: "Yellow", hex: "#FFC72C" },
+  { name: "Green", hex: "#00EB79" },
+  { name: "Purple", hex: "#A04AF0" },
+  { name: "Brown", hex: "#D98750" },
+];
 
+export function MovieForm({ movieSelected }: MovieFormProps) {
+  async function onSubmit(data: MovieFormValues) {
+    // POST /api/movies
+    try {
+      const validData: CreationMovie = {
+        title: data.title,
+        year: data.year,
+        actors: data.actors.map((actor) => {
+          if (actor.split(" ").length == 1) {
+            return {
+              firstName: actor,
+              lastName: "",
+            };
+          } else if (actor.split(" ").length == 2) {
+            return {
+              firstName: actor.split(" ")[0],
+              lastName: actor.split(" ")[1],
+            };
+          } else {
+            return {
+              firstName: actor.split(" ")[0],
+              lastName: actor.split(" ").slice(1).join(" "),
+            };
+          }
+        }),
+        directors: data.directors.map((director) => {
+          if (director.split(" ").length == 1) {
+            return {
+              firstName: director,
+              lastName: "",
+            };
+          } else if (director.split(" ").length == 2) {
+            return {
+              firstName: director.split(" ")[0],
+              lastName: director.split(" ")[1],
+            };
+          } else {
+            return {
+              firstName: director.split(" ")[0],
+              lastName: director.split(" ").slice(1).join(" "),
+            };
+          }
+        }),
+        frames: data.frames.map((frame, index) => {
+          return {
+            key: frame,
+            isPreferred: index == 0,
+          };
+        }),
+        colors: data.colors.map((color) => {
+          console.log("submit color", color);
+          console.log(
+            "find color",
+            colors.find((c) => c.hex == color)
+          );
+          return {
+            hex: color,
+            name: colors.find((c) => c.hex == color)!.name,
+          };
+        }),
+      };
+
+      const res = await fetch("/api/movies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(validData),
+      });
+      const resData = await res.json();
+      console.log(resData);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const defaultValues: MovieFormValues = {
     title: movieSelected?.title ?? "",
     year: movieSelected?.year ?? 2021,
@@ -113,9 +193,6 @@ export function MovieForm({ movieSelected, onSubmit }: MovieFormProps) {
 
   return (
     <div className="flex flex-col space-y-4">
-      {loading && (
-        <div className="absolute w-full h-full bg-gray-100 opacity-50 z-10" />
-      )}
       <form
         onSubmit={handleSubmit(submit)}
         ref={formRef}
@@ -153,11 +230,11 @@ export function MovieForm({ movieSelected, onSubmit }: MovieFormProps) {
               type="text"
               {...register("directors", {
                 setValueAs: (value) => {
-                  console.log(value);
-                  return value.map(
-                    (director: any) =>
-                      director.firstName + " " + director.lastName
-                  );
+                  if (value == "") return [];
+                  if (value.length == 1) {
+                    return [value];
+                  }
+                  return value.split(",").map((director: any) => director);
                 },
               })}
               disabled={loading}
@@ -173,10 +250,11 @@ export function MovieForm({ movieSelected, onSubmit }: MovieFormProps) {
               type="text"
               {...register("actors", {
                 setValueAs: (value) => {
-                  console.log(value);
-                  return value.map(
-                    (actor: any) => actor.firstName + " " + actor.lastName
-                  );
+                  if (value == "") return [];
+                  if (value.length == 1) {
+                    return [value];
+                  }
+                  return value.split(",").map((actor: any) => actor);
                 },
               })}
               disabled={loading}
@@ -197,6 +275,7 @@ export function MovieForm({ movieSelected, onSubmit }: MovieFormProps) {
                   defaultValue={defaultValues?.colors}
                   onChange={(colors) => {
                     field.onChange(colors);
+                    console.log(colors);
                   }}
                   disabled={loading}
                 />

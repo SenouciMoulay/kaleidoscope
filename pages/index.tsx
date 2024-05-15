@@ -10,7 +10,7 @@ import { Audio } from "@/components/ui/audio";
 import WelcomeComponent from "@/components/welcome/welcome_component";
 import SearchModal from "@/components/searchModal/SearchModal";
 import { Button } from "@/components/ui/button";
-import { MovieWithRelations } from "./admin/movies";
+import { TMovieAdmin } from "./admin/movies";
 import { f } from "@vercel/blob/dist/put-96a1f07e";
 
 export const dynamic = "force-dynamic";
