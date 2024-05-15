@@ -112,6 +112,7 @@ export default function Movies({
   //   getCoreRowModel: getCoreRowModel<Movie>(),
   // });
   const columns = ["Title", "Year", "Directors", "Actors", "Colors", ""];
+  console.log("movie :", tableMovies)
 
   const editMovie = (id: string) => {
     setSelectedMovie(movies.find((movie) => movie.id === id));
@@ -218,7 +219,7 @@ export default function Movies({
                               <div
                                 key={color.id}
                                 style={{
-                                  backgroundColor: color.name,
+                                  backgroundColor: color.value,
                                 }}
                                 className="-ml-2 w-8 h-8 rounded-full hover:scale-105 transform transition duration-300"
                               />
