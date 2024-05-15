@@ -198,7 +198,7 @@ export default function Home({
                 ref={audio}
                 className="hidden"
                 id="backgroundMusic"
-                autoPlay
+                // autoPlay
                 loop
                 src="/assets/claudio.mp3"
                 type="audio/mp3"
@@ -336,14 +336,36 @@ MovieList.displayName = "MovieList";
 const IntroVideo = forwardRef<HTMLVideoElement, React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 >((props, ref) => {
 
+    const isMobile = () => {
+        if (typeof window !== "undefined") {
+            const aspectRatio = window.innerWidth / window.innerHeight;
+            return aspectRatio < 1;
+        }
+        return false;
+    }
+
+    if (isMobile()) {
+        return <div className="w-full h-screen flex items-center justify-center " {...props}>
+            <Video
+                className="w-full h-full object-cover"
+                autoPlay
+                src={"/Video_kaléidoscope_mobile.mov"}
+                type="video/mp4"
+                muted
+                loop
+                ref={ref}
+            />
+        </div>
+    }
 
     return (
+
         <div className="w-full h-screen flex items-center justify-center " {...props}>
             <div className="w-[600px] h-[250px] flex items-center justify-center relative">
                 <Video
                     size={{ width: 470 }}
                     autoPlay
-                    src="/Video_kaléidoscope.mp4"
+                    src={"/Video_kaléidoscope.mp4"}
                     type="video/mp4"
                     muted
                     loop
