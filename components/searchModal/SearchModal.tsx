@@ -99,7 +99,7 @@ const SearchModal = (
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-lg flex flex-col items-center justify-center z-50 space-y-44"
+                    className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-lg flex flex-col items-center justify-center z-50 space-y-24"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -115,7 +115,7 @@ const SearchModal = (
                         <X size={30} className={"text-yellow-500"} />
                     </motion.button>
                     <motion.div
-                        className="flex flex-col items-center justify-center w-4/12 space-y-6"
+                        className=""
                         initial={{ y: -50, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -50, opacity: 0 }}
