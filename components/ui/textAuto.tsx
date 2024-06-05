@@ -58,7 +58,7 @@ export const TextGenerateEffect = React.forwardRef<
 
 
   return (
-    <div className={cn("text-white font-bold text-7xl leading-snug tracking-wide", className)
+    <div className={cn("text-white font-bold sm:text-3xl md:text-5xl lg:text-7xl leading-snug tracking-wide", className)
     }>
       <motion.div ref={scope}>
         {wordsArray.map((word, idx) => {
