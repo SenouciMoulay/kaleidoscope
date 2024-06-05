@@ -73,6 +73,17 @@ export default function Home({
         return false;
     }
 
+    const [isMuted, setIsMuted] = useState(false);
+
+    // get from the uri the parameters : muted, movieId
+    React.useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const muted = urlParams.get("muted");
+        if (muted === "true") {
+            setIsMuted(true);
+        }
+    }, []);
+
     // set title of the page
     React.useEffect(() => {
         document.title = "Kaléidoscope";
@@ -114,7 +125,11 @@ export default function Home({
 
     const handleDiscoverClick = () => {
         setShowWelcome(false);
-        playMusic();
+        if (!isMuted) {
+            playMusic();
+        } else {
+            pauseMusic();
+        }
         playVideo();
     };
     const [filteredMovies, setFilteredMovies] = useState<Array<TMovieIndex>>(movies as Array<TMovieIndex>);
